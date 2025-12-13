@@ -32,7 +32,12 @@ class MenuItem(models.Model):
     is_bestseller = models.BooleanField(default=False)
     is_available = models.BooleanField(default=True)
     image_url = models.URLField(max_length=500, blank=True, null=True)
-
+    image = models.ImageField(
+        upload_to='menu_items/%Y/%m/%d/',
+        blank=True,
+        null=True,
+        verbose_name='Изображение',
+    )
     class Meta:
         ordering = ['category', 'name']
         verbose_name_plural = "Блюда"

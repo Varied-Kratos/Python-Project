@@ -1,6 +1,7 @@
 import os
 import sys
 import django
+from django.core.files import File
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DeliveryGo.settings')
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -177,7 +178,7 @@ menu_items = [
     # ========== ПАСТА (10 блюд) ==========
     {
         'category': categories['Паста'],
-        'name': 'Карбонара',
+        'name': 'Паста Карбонара',
         'description': 'Спагетти с беконом и яйцами',
         'price': 550,
         'weight': '350 г',
@@ -619,6 +620,98 @@ menu_items = [
     },
 ]
 
+def find_image_for_item(item_name, image_dir):
+    extensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif']
+
+    possible_filenames = []
+
+    possible_filenames.append(item_name)
+    possible_filenames.append(item_name.replace(' ', '_'))
+    possible_filenames.append(item_name.replace(' ', '-'))
+    possible_filenames.append(item_name.lower())
+    possible_filenames.append(item_name.replace(' ', '_').lower())
+    possible_filenames.append(item_name.replace(' ', '-').lower())
+
+    translit_map = {
+        'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd',
+        'е': 'e', 'ё': 'yo', 'ж': 'zh', 'з': 'z', 'и': 'i',
+        'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n',
+        'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't',
+        'у': 'u', 'ф': 'f', 'х': 'h', 'ц': 'ts', 'ч': 'ch',
+        'ш': 'sh', 'щ': 'sch', 'ъ': '', 'ы': 'y', 'ь': '',
+        'э': 'e', 'ю': 'yu', 'я': 'ya',
+    }
+
+    translit_name = ''
+    for char in item_name.lower():
+        translit_name += translit_map.get(char, char)
+    possible_filenames.append(translit_name)
+
+    for filename in possible_filenames:
+        for ext in extensions:
+            full_path = os.path.join(image_dir, filename + ext)
+            if os.path.exists(full_path):
+                return full_path
+
+    return None
+
+
+IMAGE_DIR = "restaurant/assets"
+
+if not os.path.exists(IMAGE_DIR):
+    print(f"⚠ Внимание: Папка с изображениями не найдена: {IMAGE_DIR}")
+    print("Создайте папку и положите туда изображения, или измените путь IMAGE_DIR")
+    print("Создаю блюда без изображений...")
+    IMAGE_DIR = None
+
+total_items = len(menu_items)
+with_images = 0
+without_images = 0
+
 for i, item_data in enumerate(menu_items, 1):
-    MenuItem.objects.create(**item_data)
-    print(f"Добавлено блюдо {i}/60: {item_data['name']}")
+    menu_item = MenuItem.objects.create(**item_data)
+
+    if IMAGE_DIR:
+        image_path = find_image_for_item(item_data['name'], IMAGE_DIR)
+
+        if image_path:
+            try:
+                with open(image_path, 'rb') as f:
+                    filename = os.path.basename(image_path)
+                    menu_item.image.save(filename, File(f), save=True)
+
+                print(f"✓ {i}/{total_items}: {item_data['name']} - изображение загружено")
+                with_images += 1
+
+            except Exception as e:
+                print(f"✗ {i}/{total_items}: {item_data['name']} - ошибка загрузки: {str(e)}")
+                without_images += 1
+        else:
+            print(f"⚠ {i}/{total_items}: {item_data['name']} - изображение не найдено")
+            without_images += 1
+    else:
+        print(f"📝 {i}/{total_items}: {item_data['name']} - создано без изображения")
+        without_images += 1
+
+print("\n" + "=" * 50)
+print("📊 СТАТИСТИКА:")
+print("=" * 50)
+print(f"Всего блюд: {total_items}")
+if IMAGE_DIR:
+    print(f"С изображениями: {with_images}")
+    print(f"Без изображений: {without_images}")
+
+    if without_images > 0:
+        print("\n⚠ Для следующих блюд не найдены изображения:")
+        print("Рекомендуемые имена файлов:")
+        for item_data in menu_items:
+            item_name = item_data['name']
+            suggested_names = [
+                f"{item_name}.jpg",
+                f"{item_name.replace(' ', '_')}.jpg",
+                f"{item_name.replace(' ', '-').lower()}.jpg",
+            ]
+            print(f"  • {item_name}: {', '.join(suggested_names)}")
+
+print("\n✅ Все блюда успешно созданы!")
+print("=" * 50)

@@ -1,0 +1,354 @@
+{% extends 'restaurant/base.html' %}
+
+{% block title %}La Bella Italia - Полное меню{% endblock %}
+
+{% block content %}
+<section class="hero-section-menu py-5 text-white">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3">Меню ресторана</h1>
+        <p class="lead mb-4">Более 50 итальянских блюд с капелькой мировой кухни, которые удивят любого.</p>
+    </div>
+</section>
+
+<section class="py-4 bg-light sticky-top" style="z-index: 1000; top: 0;">
+    <div class="container">
+        <div class="row g-2">
+            {% for category in categories %}
+            <div class="col-6 col-md-3 col-lg-2">
+                <a href="#category-{{ category.id }}"
+                   class="d-block text-center text-decoration-none category-nav-item">
+                    <div class="p-2">
+                        <div class="category-nav-icon mb-1">{{ category.icon }}</div>
+                        <small class="d-block">{{ category.name }}</small>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        {% for category in categories %}
+        <div id="category-{{ category.id }}" class="category-section mb-5 pt-4">
+            <div class="d-flex align-items-center mb-4 category-header">
+                <h2 class="mb-0">
+                    <span class="category-icon">{{ category.icon }}</span>
+                    {{ category.name }}
+                </h2>
+                <span class="badge bg-primary ms-3">{{ category.items.count }} блюд</span>
+                <a href="#top" class="ms-auto btn btn-sm btn-outline-secondary">
+                    <i class="fas fa-arrow-up"></i> Наверх
+                </a>
+            </div>
+
+            <div class="row g-4">
+                {% for item in category.items.all %}
+                {% if item.is_available %}
+                <div class="col-md-6 col-lg-4 col-xl-3">
+                    <div class="card h-100 border-0 shadow-sm food-card">
+                        <div class="food-image-placeholder position-relative">
+                            <div class="placeholder-content">
+                                <i class="fas fa-utensils fa-2x"></i>
+                                <small class="d-block mt-2">Изображение {{ item.name|lower }}</small>
+                            </div>
+
+                            <div class="position-absolute top-0 start-0 m-2">
+                                {% if item.is_bestseller %}
+                                <span class="badge bg-warning text-dark me-1">Популярно!</span>
+                                {% endif %}
+                                {% if item.is_spicy %}
+                                <span class="badge bg-danger me-1">Остро!</span>
+                                {% endif %}
+                                {% if item.is_vegetarian %}
+                                <span class="badge bg-success">Для вегетарианцев</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="card-body d-flex flex-column">
+                            <div class="mb-2">
+                                <h5 class="card-title mb-1">{{ item.name }}</h5>
+                                <p class="card-text text-muted small mb-2">
+                                    {{ item.description|truncatechars:80 }}
+                                </p>
+                            </div>
+
+                            <div class="mt-auto">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div>
+                                        <span class="h5 mb-0 text-primary">{{ item.price }} ₽</span>
+                                        {% if item.weight %}
+                                        <small class="text-muted d-block">{{ item.weight }}</small>
+                                        {% endif %}
+                                        {% if item.calories %}
+                                        <small class="text-muted">{{ item.calories }} ккал</small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-success w-100 add-to-cart-btn"
+                                        data-id="{{ item.id }}"
+                                        data-name="{{ item.name }}"
+                                        data-price="{{ item.price }}">
+                                    <i class="fas fa-cart-plus me-1"></i> В корзину
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<style>
+    .hero-section-menu {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .category-nav-item {
+        background: white;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .category-nav-item:hover {
+        background: #f8f9fa;
+        border-color: #667eea;
+        transform: translateY(-2px);
+    }
+
+    .category-nav-icon {
+        font-size: 1.5rem;
+    }
+
+    .category-section {
+        scroll-margin-top: 100px;
+    }
+
+    .category-header {
+        padding-bottom: 15px;
+        border-bottom: 3px solid #667eea;
+        margin-bottom: 25px;
+    }
+
+    .category-icon {
+        font-size: 1.8rem;
+        margin-right: 10px;
+    }
+
+    .food-card {
+        transition: all 0.3s ease;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .food-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+    }
+
+    .food-image-placeholder {
+        height: 160px;
+        background: linear-gradient(45deg, #f5f7fa 0%, #c3cfe2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6c757d;
+    }
+
+    .placeholder-content {
+        text-align: center;
+    }
+
+    .category-section:target {
+        animation: highlight 2s;
+    }
+
+    @keyframes highlight {
+        0% { background-color: transparent; }
+        50% { background-color: rgba(102, 126, 234, 0.1); }
+        100% { background-color: transparent; }
+    }
+
+    .btn-outline-secondary {
+        border-radius: 20px;
+        padding: 5px 15px;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('a[href^="#category-"]').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    const categorySections = document.querySelectorAll('.category-section');
+    const navLinks = document.querySelectorAll('.category-nav-item');
+
+    function updateActiveCategory() {
+        let currentSection = '';
+
+        categorySections.forEach(section => {
+            const sectionTop = section.offsetTop - 100;
+            const sectionHeight = section.clientHeight;
+
+            if (window.scrollY >= sectionTop &&
+                window.scrollY < sectionTop + sectionHeight) {
+                currentSection = section.id;
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${currentSection}`) {
+                link.classList.add('active');
+                link.style.borderColor = '#667eea';
+                link.style.background = '#e9ecef';
+            } else {
+                link.style.borderColor = 'transparent';
+                link.style.background = 'white';
+            }
+        });
+    }
+
+    window.addEventListener('scroll', updateActiveCategory);
+
+    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const itemId = this.dataset.id;
+            const itemName = this.dataset.name;
+
+            const originalHtml = this.innerHTML;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+            this.disabled = true;
+
+            fetch('/api/add_to_cart/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    item_id: itemId,
+                    quantity: 1
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    this.innerHTML = '<i class="fas fa-check"></i> Добавлено';
+                    this.classList.remove('btn-success');
+                    this.classList.add('btn-primary');
+
+                    updateCartCount();
+                    showNotification(data.message, 'success');
+
+                    setTimeout(() => {
+                        this.innerHTML = originalHtml;
+                        this.classList.remove('btn-primary');
+                        this.classList.add('btn-success');
+                        this.disabled = false;
+                    }, 2000);
+                } else {
+                    this.innerHTML = originalHtml;
+                    this.disabled = false;
+                    showNotification('Ошибка: ' + data.error, 'danger');
+                }
+            })
+            .catch(error => {
+                this.innerHTML = originalHtml;
+                this.disabled = false;
+                showNotification('Ошибка сети', 'danger');
+            });
+        });
+    });
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                cookie = cookie.trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function updateCartCount() {
+        fetch('/api/cart_count/')
+            .then(response => response.json())
+            .then(data => {
+                document.querySelectorAll('.cart-count').forEach(counter => {
+                    counter.textContent = data.count;
+                    counter.classList.add('bounce');
+                    setTimeout(() => counter.classList.remove('bounce'), 300);
+                });
+            });
+    }
+
+    function showNotification(message, type = 'success') {
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+        alert.style.cssText = `
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 300px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        `;
+
+        alert.innerHTML = `
+            <div class="d-flex align-items-center">
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+                <span>${message}</span>
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+            </div>
+        `;
+
+        document.body.appendChild(alert);
+
+        setTimeout(() => {
+            if (alert.parentNode) alert.remove();
+        }, 3000);
+    }
+
+    updateCartCount();
+    updateActiveCategory();
+
+    const style = document.createElement('style');
+    style.textContent = `
+        .bounce {
+            animation: bounce 0.3s;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.5); }
+        }
+    `;
+    document.head.appendChild(style);
+});
+</script>
+{% endblock %}

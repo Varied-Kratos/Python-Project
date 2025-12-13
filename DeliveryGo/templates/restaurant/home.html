@@ -1,0 +1,196 @@
+{% extends 'restaurant/base.html' %}
+
+{% block title %}La Bella Italia - Главная{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">Настоящий вкус Италии в каждом блюде</h1>
+                <p class="lead mb-4">Мы готовим аутентичную итальянскую кухню по традиционным рецептам с 1998 года. Только свежие продукты и любовь к своему делу.</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="/menu/" class="btn btn-italy btn-lg">
+                        <i class="fas fa-utensils me-2"></i>Заказать сейчас
+                    </a>
+                    <a href="#menu" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-book me-2"></i>Посмотреть меню
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <div class="feature-icon">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <h4>Доставка в любой уголок Нижнего Новгорода.</h4>
+                    <p>Доставляем заказы за 60-120 минут. Качественная еда требует ожидания!</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <div class="feature-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h4>Свежие продукты</h4>
+                    <p>Используем фермерские овощи, итальянские сыры.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <div class="feature-icon">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <h4>Состав команды - повара, прямиком из Италии в тандеме с шеф-поварами из России</h4>
+                    <p>Готовят по традиционным рецептам, утверждавшимся годами.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-light" id="menu">
+    <div class="container">
+        <h2 class="text-center section-title">Популярно!</h2>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="menu-card">
+                    <div class="position-relative">
+                        <img src="https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                             class="card-img-top menu-card-img" alt="Пицца Маргарита">
+                        <span class="price-tag">650 ₽</span>
+                        <span class="badge badge-vegetarian position-absolute" style="top: 15px; left: 15px;">VEG</span>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Пицца Маргарита</h5>
+                        <p class="card-text">Классическая итальянская пицца с томатным соусом, моцареллой и свежим базиликом.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">30 см • 580 г</span>
+                            <button class="btn btn-danger add-to-cart">
+                                <i class="fas fa-plus me-1"></i>В корзину
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="menu-card">
+                    <div class="position-relative">
+                        <img src="https://images.unsplash.com/photo-1612874742237-6526221588e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                             class="card-img-top menu-card-img" alt="Паста Карбонара">
+                        <span class="price-tag">550 ₽</span>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Паста Карбонара</h5>
+                        <p class="card-text">Спагетти с гуанчиале, яйцами, пармезаном и черным перцем по римскому рецепту.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">350 г</span>
+                            <button class="btn btn-danger add-to-cart">
+                                <i class="fas fa-plus me-1"></i>В корзину
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="menu-card">
+                    <div class="position-relative">
+                        <img src="https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                             class="card-img-top menu-card-img" alt="Тирамису">
+                        <span class="price-tag">350 ₽</span>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Тирамису</h5>
+                        <p class="card-text">Традиционный итальянский десерт из маскарпоне, савоярди и крепкого эспрессо.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">1 порция</span>
+                            <button class="btn btn-danger add-to-cart">
+                                <i class="fas fa-plus me-1"></i>В корзину
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-5">
+            <a href="/menu/" class="btn btn-italy btn-lg">
+                <i class="fas fa-book-open me-2"></i>Смотреть всё меню
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="py-5" id="about">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <img src="https://images.unsplash.com/photo-1559925393-8be0ec4767c8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                     class="img-fluid rounded shadow" alt="Интерьер ресторана">
+            </div>
+            <div class="col-lg-6">
+                <h2 class="section-title text-start">Наша история</h2>
+                <p class="lead">С 1998 года мы дарим Нижнему вкус настоящей Италии.</p>
+                <p>Основатель ресторана привез в Россию рецепты своей бабушки из Неаполя. Мы не идем на компромиссы в качестве: наша моцарелла привозится из Италии, томаты выращиваются на экологически чистых фермах, а оливковое масло — только первого холодного отжима.</p>
+                <p>В нашем меню только аутентичные блюда, которые вы можете попробовать в маленьких тратториях Рима, Флоренции и Неаполя.</p>
+                <div class="mt-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-check-circle me-3" style="color: var(--italy-green); font-size: 1.2rem;"></i>
+                        <span>Более 32 000 довольных клиентов</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-check-circle me-3" style="color: var(--italy-green); font-size: 1.2rem;"></i>
+                        <span>Рейтинг 4.9/5 на Яндекс.Картах</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-check-circle me-3" style="color: var(--italy-green); font-size: 1.2rem;"></i>
+                        <span>Бесплатная доставка при заказе от 2 000 ₽</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-light" id="contact">
+    <div class="container">
+        <h2 class="text-center section-title">Закажите прямо сейчас</h2>
+        <p class="text-center lead mb-5">Доставляем горячую пиццу и свежую пасту в любую точку Нижнего!</p>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card border-0 shadow">
+                    <div class="card-body p-5">
+                        <div class="row text-center">
+                            <div class="col-md-6 mb-4 mb-md-0">
+                                <div class="p-3 h-100">
+                                    <i class="fas fa-phone-alt fa-3x mb-3" style="color: var(--italy-green);"></i>
+                                    <h5>По телефону</h5>
+                                    <p class="mb-2">+7 (999) 123-45-67</p>
+                                    <small class="text-muted">Ежедневно 10:00-23:00</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-3 h-100">
+                                    <i class="fas fa-globe fa-3x mb-3" style="color: var(--gold);"></i>
+                                    <h5>На сайте</h5>
+                                    <p>Заказывайте онлайн</p>
+                                    <a href="/menu/" class="btn btn-italy btn-sm mt-2">Сделать заказ</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</section>
+{% endblock %}

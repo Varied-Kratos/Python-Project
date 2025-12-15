@@ -15,10 +15,10 @@ Category.objects.all().delete()
 categories_data = [
     {'name': 'Супы', 'icon': '🍲', 'order': 1, 'slug': 'soups'},
     {'name': 'Горячие блюда', 'icon': '🍛', 'order': 2, 'slug': 'hot-dishes'},
-    {'name': 'Пиццы', 'icon': '🍕', 'order': 3, 'slug': 'pizza'},
+    {'name': 'Пиццы', 'icon': '🍕', 'order': 6, 'slug': 'pizza'},
     {'name': 'Паста', 'icon': '🍝', 'order': 4, 'slug': 'pasta'},
     {'name': 'Салаты', 'icon': '🥗', 'order': 5, 'slug': 'salads'},
-    {'name': 'Бургеры', 'icon': '🍔', 'order': 6, 'slug': 'burgers'},
+    {'name': 'Бургеры', 'icon': '🍔', 'order': 3, 'slug': 'burgers'},
     {'name': 'Десерты', 'icon': '🍰', 'order': 7, 'slug': 'desserts'},
     {'name': 'Напитки', 'icon': '🥤', 'order': 8, 'slug': 'drinks'},
     {'name': 'Закуски', 'icon': '🧀', 'order': 9, 'slug': 'appetizers'},

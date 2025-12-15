@@ -319,16 +319,27 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const cartCount = localStorage.getItem('cartCount') || 0;
-            document.querySelectorAll('.cart-count').forEach(el => {
-                el.textContent = cartCount;
-            });
+            function updateCartCount() {
+                fetch('/api/cart_count/')
+                    .then(response => response.json())
+                    .then(data => {
+                        document.querySelectorAll('.cart-count').forEach(el => {
+                            el.textContent = data.count;
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Ошибка при получении количества корзины:', error);
+                    });
+            }
+
+            updateCartCount();
 
             document.querySelectorAll('.add-to-cart').forEach(button => {
                 button.addEventListener('click', function() {
-                    let count = parseInt(localStorage.getItem('cartCount') || 0);
+                    const originalHtml = this.innerHTML;
+
+                    let count = parseInt(document.querySelector('.cart-count').textContent || 0);
                     count++;
-                    localStorage.setItem('cartCount', count);
 
                     document.querySelectorAll('.cart-count').forEach(el => {
                         el.textContent = count;

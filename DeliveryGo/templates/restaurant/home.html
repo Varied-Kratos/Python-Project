@@ -61,66 +61,44 @@
         <h2 class="text-center section-title">Популярно!</h2>
 
         <div class="row g-4">
+            {% for item in bestsellers %}
             <div class="col-md-4">
                 <div class="menu-card">
                     <div class="position-relative">
+                        {% if item.image %}
+                        <img src="{{ item.image.url }}"
+                             class="card-img-top menu-card-img" alt="{{ item.name }}">
+                        {% elif item.image_url %}
+                        <img src="{{ item.image_url }}"
+                             class="card-img-top menu-card-img" alt="{{ item.name }}">
+                        {% else %}
                         <img src="https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                             class="card-img-top menu-card-img" alt="Пицца Маргарита">
-                        <span class="price-tag">650 ₽</span>
+                             class="card-img-top menu-card-img" alt="{{ item.name }}">
+                        {% endif %}
+                        <span class="price-tag">{{ item.price }} ₽</span>
+                        {% if item.is_vegetarian %}
                         <span class="badge badge-vegetarian position-absolute" style="top: 15px; left: 15px;">VEG</span>
+                        {% endif %}
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title">Пицца Маргарита</h5>
-                        <p class="card-text">Классическая итальянская пицца с томатным соусом, моцареллой и свежим базиликом.</p>
+                        <h5 class="card-title">{{ item.name }}</h5>
+                        <p class="card-text">{{ item.description|truncatechars:80 }}</p>
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-muted">30 см • 580 г</span>
-                            <button class="btn btn-danger add-to-cart">
+                            <span class="text-muted">
+                                {% if item.weight %}{{ item.weight }} • {% endif %}
+                                {% if item.calories %}{{ item.calories }} ккал{% endif %}
+                            </span>
+                            <button class="btn btn-danger add-to-cart-api"
+                                    data-id="{{ item.id }}"
+                                    data-name="{{ item.name }}"
+                                    data-price="{{ item.price }}">
                                 <i class="fas fa-plus me-1"></i>В корзину
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-4">
-                <div class="menu-card">
-                    <div class="position-relative">
-                        <img src="https://images.unsplash.com/photo-1612874742237-6526221588e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                             class="card-img-top menu-card-img" alt="Паста Карбонара">
-                        <span class="price-tag">550 ₽</span>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Паста Карбонара</h5>
-                        <p class="card-text">Спагетти с гуанчиале, яйцами, пармезаном и черным перцем по римскому рецепту.</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-muted">350 г</span>
-                            <button class="btn btn-danger add-to-cart">
-                                <i class="fas fa-plus me-1"></i>В корзину
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="menu-card">
-                    <div class="position-relative">
-                        <img src="https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                             class="card-img-top menu-card-img" alt="Тирамису">
-                        <span class="price-tag">350 ₽</span>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Тирамису</h5>
-                        <p class="card-text">Традиционный итальянский десерт из маскарпоне, савоярди и крепкого эспрессо.</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-muted">1 порция</span>
-                            <button class="btn btn-danger add-to-cart">
-                                <i class="fas fa-plus me-1"></i>В корзину
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
 
         <div class="text-center mt-5">
@@ -130,6 +108,113 @@
         </div>
     </div>
 </section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function updateCartCount() {
+            fetch('/api/cart_count/')
+                .then(response => response.json())
+                .then(data => {
+                    document.querySelectorAll('.cart-count').forEach(counter => {
+                        counter.textContent = data.count;
+                    });
+                });
+        }
+
+        document.querySelectorAll('.add-to-cart-api').forEach(button => {
+            button.addEventListener('click', function() {
+                const itemId = this.dataset.id;
+                const itemName = this.dataset.name;
+                const originalHtml = this.innerHTML;
+
+                this.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+                this.disabled = true;
+
+                fetch('/api/add_to_cart/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({
+                        item_id: itemId,
+                        quantity: 1
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        this.innerHTML = '<i class="fas fa-check"></i> Добавлено';
+                        this.classList.remove('btn-danger');
+                        this.classList.add('btn-success');
+
+                        updateCartCount();
+                        showNotification(data.message, 'success');
+
+                        setTimeout(() => {
+                            this.innerHTML = originalHtml;
+                            this.classList.remove('btn-success');
+                            this.classList.add('btn-danger');
+                            this.disabled = false;
+                        }, 2000);
+                    } else {
+                        this.innerHTML = originalHtml;
+                        this.disabled = false;
+                        showNotification('Ошибка: ' + data.error, 'danger');
+                    }
+                })
+                .catch(error => {
+                    this.innerHTML = originalHtml;
+                    this.disabled = false;
+                    showNotification('Ошибка сети', 'danger');
+                });
+            });
+        });
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let cookie of cookies) {
+                    cookie = cookie.trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function showNotification(message, type = 'success') {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            alert.style.cssText = `
+                top: 20px;
+                right: 20px;
+                z-index: 9999;
+                min-width: 300px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            `;
+
+            alert.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+                    <span>${message}</span>
+                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+
+            document.body.appendChild(alert);
+
+            setTimeout(() => {
+                if (alert.parentNode) alert.remove();
+            }, 3000);
+        }
+
+        updateCartCount();
+    });
+    </script>
 
 <section class="py-5" id="about">
     <div class="container">

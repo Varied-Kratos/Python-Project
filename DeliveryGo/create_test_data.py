@@ -437,6 +437,7 @@ menu_items = [
         'calories': 590,
         'is_spicy': True,
         'is_available': True,
+
     },
     {
         'category': categories['Бургеры'],

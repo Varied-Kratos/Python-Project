@@ -10,7 +10,7 @@
     </div>
 </section>
 
-<section class="py-4 bg-light sticky-top" style="z-index: 1000; top: 0;">
+<section class="py-4 bg-light" style="z-index: 1000; top: 0;">
     <div class="container">
         <div class="row g-2">
             {% for category in categories %}
@@ -18,7 +18,15 @@
                 <a href="#category-{{ category.id }}"
                    class="d-block text-center text-decoration-none category-nav-item">
                     <div class="p-2">
-                        <div class="category-nav-icon mb-1">{{ category.icon }}</div>
+                        <div class="category-nav-icon mb-1">
+                            {% if category.name == "Супы" %}
+                            🍲
+                            {% elif category.name == "Горячие блюда" %}
+                            🍛
+                            {% else %}
+                            {{ category.icon }}
+                            {% endif %}
+                        </div>
                         <small class="d-block">{{ category.name }}</small>
                     </div>
                 </a>
@@ -34,7 +42,15 @@
         <div id="category-{{ category.id }}" class="category-section mb-5 pt-4">
             <div class="d-flex align-items-center mb-4 category-header">
                 <h2 class="mb-0">
-                    <span class="category-icon">{{ category.icon }}</span>
+                    <span class="category-icon">
+                        {% if category.name == "Супы" %}
+                        🍲
+                        {% elif category.name == "Горячие блюда" %}
+                        🍛
+                        {% else %}
+                        {{ category.icon }}
+                        {% endif %}
+                    </span>
                     {{ category.name }}
                 </h2>
                 <span class="badge bg-primary ms-3">{{ category.items.count }} блюд</span>
@@ -121,11 +137,12 @@
 
 <style>
     .hero-section-menu {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #34d399 0%, #059669 100%);
     }
 
     .category-nav-item {
         background: white;
+        color: gray;
         border-radius: 8px;
         transition: all 0.3s ease;
         border: 2px solid transparent;
@@ -133,7 +150,7 @@
 
     .category-nav-item:hover {
         background: #f8f9fa;
-        border-color: #667eea;
+        border-color: #059669;
         transform: translateY(-2px);
     }
 
@@ -147,7 +164,7 @@
 
     .category-header {
         padding-bottom: 15px;
-        border-bottom: 3px solid #667eea;
+        border-bottom: 3px solid #059669;
         margin-bottom: 25px;
     }
 
@@ -186,13 +203,18 @@
 
     @keyframes highlight {
         0% { background-color: transparent; }
-        50% { background-color: rgba(102, 126, 234, 0.1); }
+        50% { background-color: rgba(5, 150, 105, 0.1); }
         100% { background-color: transparent; }
     }
 
     .btn-outline-secondary {
         border-radius: 20px;
         padding: 5px 15px;
+    }
+
+    .btn-outline-secondary:hover {
+        border-color: #059669;
+        color: #059669;
     }
 </style>
 
@@ -233,8 +255,8 @@ document.addEventListener('DOMContentLoaded', function() {
             link.classList.remove('active');
             if (link.getAttribute('href') === `#${currentSection}`) {
                 link.classList.add('active');
-                link.style.borderColor = '#667eea';
-                link.style.background = '#e9ecef';
+                link.style.borderColor = '#059669';
+                link.style.background = '#d1fae5';
             } else {
                 link.style.borderColor = 'transparent';
                 link.style.background = 'white';

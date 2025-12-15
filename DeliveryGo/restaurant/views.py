@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Case, When, IntegerField
 import json
 from .models import Category, MenuItem, CartItem
 
@@ -16,7 +17,27 @@ def home(request):
 
 
 def menu(request):
+    # Создаем правильный порядок категорий с супами и горячими блюдами в начале
     categories = Category.objects.prefetch_related('items').all()
+
+    # Создаем пользовательский порядок сортировки
+    # Если в базе уже есть категории с названиями "Супы" и "Горячие блюда", они будут в начале
+    # Если их нет, вы можете создать их через админку или добавить код для их создания
+
+    # Для правильного порядка создаем сортировку вручную
+    category_order = {
+        'Супы': 1,
+        'Горячие блюда': 2,
+        'Закуски': 3,
+        'Салаты': 4,
+        'Паста': 5,
+        'Пицца': 6,
+        'Десерты': 7,
+        'Напитки': 8,
+    }
+
+    # Сортируем категории
+    categories = sorted(categories, key=lambda x: category_order.get(x.name, 99))
 
     return render(request, 'restaurant/menu.html', {
         'categories': categories

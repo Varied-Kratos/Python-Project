@@ -13,14 +13,16 @@ MenuItem.objects.all().delete()
 Category.objects.all().delete()
 
 categories_data = [
-    {'name': 'Пиццы', 'icon': '🍕', 'order': 1, 'slug': 'pizza'},
-    {'name': 'Паста', 'icon': '🍝', 'order': 2, 'slug': 'pasta'},
-    {'name': 'Бургеры', 'icon': '🍔', 'order': 3, 'slug': 'burgers'},
-    {'name': 'Салаты', 'icon': '🥗', 'order': 4, 'slug': 'salads'},
-    {'name': 'Десерты', 'icon': '🍰', 'order': 5, 'slug': 'desserts'},
-    {'name': 'Напитки', 'icon': '🥤', 'order': 6, 'slug': 'drinks'},
-    {'name': 'Закуски', 'icon': '🧀', 'order': 7, 'slug': 'appetizers'},
-    {'name': 'Соусы', 'icon': '🥫', 'order': 8, 'slug': 'sauces'},
+    {'name': 'Супы', 'icon': '🍲', 'order': 1, 'slug': 'soups'},
+    {'name': 'Горячие блюда', 'icon': '🍛', 'order': 2, 'slug': 'hot-dishes'},
+    {'name': 'Пиццы', 'icon': '🍕', 'order': 3, 'slug': 'pizza'},
+    {'name': 'Паста', 'icon': '🍝', 'order': 4, 'slug': 'pasta'},
+    {'name': 'Салаты', 'icon': '🥗', 'order': 5, 'slug': 'salads'},
+    {'name': 'Бургеры', 'icon': '🍔', 'order': 6, 'slug': 'burgers'},
+    {'name': 'Десерты', 'icon': '🍰', 'order': 7, 'slug': 'desserts'},
+    {'name': 'Напитки', 'icon': '🥤', 'order': 8, 'slug': 'drinks'},
+    {'name': 'Закуски', 'icon': '🧀', 'order': 9, 'slug': 'appetizers'},
+    {'name': 'Соусы', 'icon': '🥫', 'order': 10, 'slug': 'sauces'},
 ]
 
 categories = {}
@@ -29,6 +31,124 @@ for cat_data in categories_data:
     categories[cat_data['name']] = category
 
 menu_items = [
+    {
+        'category': categories['Супы'],
+        'name': 'Минестроне',
+        'description': 'Классический итальянский овощной суп',
+        'price': 450,
+        'weight': '400 мл',
+        'calories': 280,
+        'is_vegetarian': True,
+        'is_bestseller': True,
+        'is_available': True,
+    },
+    {
+        'category': categories['Супы'],
+        'name': 'Риболлита',
+        'description': 'Тосканский суп с бобами и овощами',
+        'price': 480,
+        'weight': '400 мл',
+        'calories': 320,
+        'is_vegetarian': True,
+        'is_available': True,
+    },
+    {
+        'category': categories['Супы'],
+        'name': 'Страчателла',
+        'description': 'Куриный суп с яйцом и пармезаном',
+        'price': 420,
+        'weight': '350 мл',
+        'calories': 290,
+        'is_available': True,
+    },
+    {
+        'category': categories['Супы'],
+        'name': 'Паста э фаджиоли',
+        'description': 'Суп с пастой и белой фасолью',
+        'price': 440,
+        'weight': '400 мл',
+        'calories': 350,
+        'is_vegetarian': True,
+        'is_bestseller': True,
+        'is_available': True,
+    },
+    {
+        'category': categories['Супы'],
+        'name': 'Зупа ди песке',
+        'description': 'Рыбный суп по-итальянски',
+        'price': 520,
+        'weight': '350 мл',
+        'calories': 310,
+        'is_available': True,
+    },
+    {
+        'category': categories['Супы'],
+        'name': 'Суп ди вердуре',
+        'description': 'Свежий овощной суп-пюре',
+        'price': 430,
+        'weight': '350 мл',
+        'calories': 270,
+        'is_vegetarian': True,
+        'is_available': True,
+    },
+    {
+        'category': categories['Горячие блюда'],
+        'name': 'Оссобуко',
+        'description': 'Тушеная телячья голяшка по-милански',
+        'price': 1250,
+        'weight': '450 г',
+        'calories': 680,
+        'is_bestseller': True,
+        'is_available': True,
+    },
+    {
+        'category': categories['Горячие блюда'],
+        'name': 'Сальтимбокка',
+        'description': 'Телятина с шалфеем и прошутто',
+        'price': 980,
+        'weight': '350 г',
+        'calories': 520,
+        'is_available': True,
+    },
+    {
+        'category': categories['Горячие блюда'],
+        'name': 'Полента с грибами',
+        'description': 'Кукурузная каша с лесными грибами',
+        'price': 650,
+        'weight': '400 г',
+        'calories': 480,
+        'is_vegetarian': True,
+        'is_available': True,
+    },
+    {
+        'category': categories['Горячие блюда'],
+        'name': 'Скалоппине аль лимоне',
+        'description': 'Телятина в лимонном соусе',
+        'price': 920,
+        'weight': '350 г',
+        'calories': 490,
+        'is_available': True,
+    },
+    {
+        'category': categories['Горячие блюда'],
+        'name': 'Бранзино ал форно',
+        'description': 'Запеченный морской окунь',
+        'price': 1100,
+        'weight': '400 г',
+        'calories': 450,
+        'is_available': True,
+    },
+    {
+        'category': categories['Горячие блюда'],
+        'name': 'Пармиджана ди меланцане',
+        'description': 'Запеченные баклажаны с пармезаном',
+        'price': 750,
+        'weight': '350 г',
+        'calories': 420,
+        'is_vegetarian': True,
+        'is_bestseller': True,
+        'is_available': True,
+    },
     {
         'category': categories['Пиццы'],
         'name': 'Маргарита',
@@ -174,8 +294,6 @@ menu_items = [
         'calories': 790,
         'is_available': True,
     },
-
-    # ========== ПАСТА (10 блюд) ==========
     {
         'category': categories['Паста'],
         'name': 'Паста Карбонара',
@@ -312,7 +430,7 @@ menu_items = [
     },
     {
         'category': categories['Бургеры'],
-        'name': 'Бургер с беконом',
+        'name': 'С беконом',
         'description': 'С беконом и острым соусом',
         'price': 490,
         'weight': '320 г',
@@ -379,7 +497,7 @@ menu_items = [
     },
     {
         'category': categories['Салаты'],
-        'name': 'С крабовыми палочками',
+        'name': 'С крабом',
         'description': 'С кукурузой и яйцом',
         'price': 400,
         'weight': '300 г',
@@ -659,7 +777,7 @@ def find_image_for_item(item_name, image_dir):
 IMAGE_DIR = "restaurant/assets"
 
 if not os.path.exists(IMAGE_DIR):
-    print(f"⚠ Внимание: Папка с изображениями не найдена: {IMAGE_DIR}")
+    print(f"Внимание: Папка с изображениями не найдена: {IMAGE_DIR}")
     print("Создайте папку и положите туда изображения, или измените путь IMAGE_DIR")
     print("Создаю блюда без изображений...")
     IMAGE_DIR = None
@@ -692,26 +810,3 @@ for i, item_data in enumerate(menu_items, 1):
     else:
         print(f"📝 {i}/{total_items}: {item_data['name']} - создано без изображения")
         without_images += 1
-
-print("\n" + "=" * 50)
-print("📊 СТАТИСТИКА:")
-print("=" * 50)
-print(f"Всего блюд: {total_items}")
-if IMAGE_DIR:
-    print(f"С изображениями: {with_images}")
-    print(f"Без изображений: {without_images}")
-
-    if without_images > 0:
-        print("\n⚠ Для следующих блюд не найдены изображения:")
-        print("Рекомендуемые имена файлов:")
-        for item_data in menu_items:
-            item_name = item_data['name']
-            suggested_names = [
-                f"{item_name}.jpg",
-                f"{item_name.replace(' ', '_')}.jpg",
-                f"{item_name.replace(' ', '-').lower()}.jpg",
-            ]
-            print(f"  • {item_name}: {', '.join(suggested_names)}")
-
-print("\n✅ Все блюда успешно созданы!")
-print("=" * 50)

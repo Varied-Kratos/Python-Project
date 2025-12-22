@@ -791,10 +791,9 @@ for i, item_data in enumerate(menu_items, 1):
         image_path = find_image_for_item(item_data['name'], IMAGE_DIR)
 
         if image_path:
-            try:
-                with open(image_path, 'rb') as f:
-                    filename = os.path.basename(image_path)
-                    menu_item.image.save(filename, File(f), save=True)
+            with open(image_path, 'rb') as f:
+                filename = os.path.basename(image_path)
+                menu_item.image.save(filename, File(f), save=True)
 if IMAGE_DIR:
     print("\nОбновление URL изображений...")
     for menu_item in MenuItem.objects.filter(image__isnull=False):

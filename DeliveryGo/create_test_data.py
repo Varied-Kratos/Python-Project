@@ -811,3 +811,21 @@ for i, item_data in enumerate(menu_items, 1):
     else:
         print(f"📝 {i}/{total_items}: {item_data['name']} - создано без изображения")
         without_images += 1
+print("\n" + "="*50)
+print(f"Создано {total_items} блюд")
+print(f"С изображениями: {with_images}")
+print(f"Без изображений: {without_images}")
+
+# Обновляем URL для тех, у кого есть локальные изображения
+if IMAGE_DIR:
+    print("\nОбновление URL изображений...")
+    for menu_item in MenuItem.objects.filter(image__isnull=False):
+        try:
+            # Генерируем image_url на основе загруженного изображения
+            menu_item.image_url = menu_item.image.url
+            menu_item.save()
+            print(f"✓ {menu_item.name} - URL установлен: {menu_item.image_url}")
+        except Exception as e:
+            print(f"✗ {menu_item.name} - ошибка: {str(e)}")
+
+print("\nГотово! Запустите сервер: python manage.py runserver")

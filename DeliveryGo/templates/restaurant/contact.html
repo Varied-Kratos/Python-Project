@@ -1,0 +1,134 @@
+{% extends 'restaurant/base.html' %}
+
+{% block title %}Контакты - La Bella Italia{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-10 text-center">
+                <h1 class="display-6 fw-bold text-dark mb-3">Контакты</h1>
+                <p class="lead text-muted">Свяжитесь с нами любым удобным способом</p>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                    <div class="card-body p-4 p-md-5">
+                        <div class="contact-info">
+                            <!-- Адрес -->
+                            <div class="row align-items-center mb-4 pb-3 border-bottom">
+                                <div class="col-auto">
+                                    <div class="rounded-circle bg-italy text-white p-3">
+                                        <i class="fas fa-map-marker-alt fa-2x"></i>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <h4 class="h5 fw-bold text-dark mb-2">Адрес</h4>
+                                    <p class="mb-0 text-muted">г. Нижний Новгород, ул. Родионова, д. 167</p>
+                                </div>
+                            </div>
+
+                            <!-- Телефон -->
+                            <div class="row align-items-center mb-4 pb-3 border-bottom">
+                                <div class="col-auto">
+                                    <div class="rounded-circle bg-italy text-white p-3">
+                                        <i class="fas fa-phone fa-2x"></i>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <h4 class="h5 fw-bold text-dark mb-2">Телефон</h4>
+                                    <p class="mb-0 text-muted">+7 (999) 123-45-67</p>
+                                </div>
+                            </div>
+
+                            <!-- Часы работы -->
+                            <div class="row align-items-center mb-4 pb-3 border-bottom">
+                                <div class="col-auto">
+                                    <div class="rounded-circle bg-italy text-white p-3">
+                                        <i class="fas fa-clock fa-2x"></i>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <h4 class="h5 fw-bold text-dark mb-2">Часы работы</h4>
+                                    <p class="mb-0 text-muted">Ежедневно с 10:00 до 23:00</p>
+                                    <small class="text-muted">Доставка работает до 22:00</small>
+                                </div>
+                            </div>
+
+                            <!-- Доставка -->
+                            <div class="row align-items-center mb-4">
+                                <div class="col-auto">
+                                    <div class="rounded-circle bg-italy text-white p-3">
+                                        <i class="fas fa-truck fa-2x"></i>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <h4 class="h5 fw-bold text-dark mb-2">Доставка</h4>
+                                    <p class="mb-0 text-muted">Доставка в течение 60-120 минут</p>
+                                    <small class="text-muted">Бесплатная доставка при заказе от 2000 рублей</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Кнопка возврата -->
+                        <div class="text-center mt-4">
+                            <a href="{% url 'home' %}" class="btn btn-italy btn-lg">
+                                <i class="fas fa-arrow-left me-2"></i>На главную
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.bg-italy {
+    background: linear-gradient(135deg, #d4af37 0%, #c19b2c 100%);
+}
+
+.btn-italy {
+    background: linear-gradient(135deg, #d4af37 0%, #c19b2c 100%);
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-italy:hover {
+    background: linear-gradient(135deg, #c19b2c 0%, #a8841e 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(212, 175, 55, 0.3);
+    color: #fff;
+}
+
+.text-italy {
+    color: #d4af37 !important;
+}
+
+.card {
+    border: 1px solid rgba(0,0,0,0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+}
+
+.rounded-circle {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.border-bottom {
+    border-color: rgba(212, 175, 55, 0.2) !important;
+}
+</style>
+{% endblock %}

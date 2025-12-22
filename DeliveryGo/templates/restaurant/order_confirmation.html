@@ -1,0 +1,157 @@
+<!-- restaurant/templates/restaurant/order_confirmation.html -->
+{% extends 'restaurant/base.html' %}
+
+{% block title %}Заказ оформлен - La Bella Italia{% endblock %}
+
+{% block content %}
+<section class="hero-section-menu py-5">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3">Заказ оформлен!</h1>
+        <p class="lead mb-0">Спасибо за ваш заказ</p>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm text-center">
+                    <div class="card-body p-5">
+                        <div class="mb-4">
+                            <div class="icon-circle bg-success mx-auto mb-4">
+                                <i class="fas fa-check fa-3x text-white"></i>
+                            </div>
+                            <h2 class="mb-3">Заказ №{{ order.order_number }} принят</h2>
+                            <p class="lead text-muted">Мы уже начали готовить ваш заказ</p>
+                        </div>
+
+                        <div class="order-details mb-5">
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <div class="card h-100 border">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Информация о заказе</h5>
+                                            <div class="text-start">
+                                                <p><strong>Номер заказа:</strong> {{ order.order_number }}</p>
+                                                <p><strong>Дата:</strong> {{ order.created_at|date:"d.m.Y H:i" }}</p>
+                                                <p><strong>Статус:</strong> {{ order.get_status_display }}</p>
+                                                <p><strong>Способ оплаты:</strong> {{ order.get_payment_method_display }}</p>
+                                                <p><strong>Итоговая сумма:</strong> {{ order.final_amount|floatformat:"0" }} ₽</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 mb-4">
+                                    <div class="card h-100 border">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Доставка</h5>
+                                            <div class="text-start">
+                                                <p><strong>Имя:</strong> {{ order.customer_name }}</p>
+                                                <p><strong>Телефон:</strong> {{ order.phone }}</p>
+                                                <p><strong>Адрес:</strong> {{ order.delivery_address }}</p>
+                                                {% if order.apartment %}
+                                                <p><strong>Квартира:</strong> {{ order.apartment }}</p>
+                                                {% endif %}
+                                                {% if order.comment %}
+                                                <p><strong>Комментарий:</strong> {{ order.comment }}</p>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-5">
+                            <h4 class="mb-4">Состав заказа</h4>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Блюдо</th>
+                                            <th>Количество</th>
+                                            <th>Цена</th>
+                                            <th>Сумма</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in order_items %}
+                                        <tr>
+                                            <td>{{ item.menu_item.name }}</td>
+                                            <td>{{ item.quantity }}</td>
+                                            <td>{{ item.price|floatformat:"0" }} ₽</td>
+                                            <td>{{ item.total|floatformat:"0" }} ₽</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="3" class="text-end"><strong>Товары:</strong></td>
+                                            <td>{{ order.total_amount|floatformat:"0" }} ₽</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="3" class="text-end"><strong>Доставка:</strong></td>
+                                            <td>
+                                                {% if order.delivery_fee == 0 %}
+                                                <span class="text-success">Бесплатно</span>
+                                                {% else %}
+                                                {{ order.delivery_fee|floatformat:"0" }} ₽
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr class="table-active">
+                                            <td colspan="3" class="text-end"><strong>Итого:</strong></td>
+                                            <td><strong>{{ order.final_amount|floatformat:"0" }} ₽</strong></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Время доставки:</strong> 60-120 минут. Курьер позвонит вам за 15 минут до прибытия.
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <i class="fas fa-clock me-2"></i>
+                            <strong>Статус заказа:</strong> Вы можете отслеживать статус вашего заказа по номеру {{ order.order_number }}
+                        </div>
+
+                        <div class="mt-4">
+                            <a href="/menu/" class="btn btn-italy me-3">
+                                <i class="fas fa-utensils me-2"></i>Сделать новый заказ
+                            </a>
+                            <a href="/" class="btn btn-outline-primary">
+                                <i class="fas fa-home me-2"></i>На главную
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.icon-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.table th {
+    background-color: var(--italy-green);
+    color: white;
+    border-color: var(--italy-green);
+}
+
+.table tfoot {
+    font-size: 1.1em;
+}
+</style>
+{% endblock %}

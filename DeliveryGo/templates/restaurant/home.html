@@ -63,32 +63,43 @@
         <div class="row g-4">
             {% for item in bestsellers %}
             <div class="col-md-4">
-                <div class="menu-card">
-                    <div class="position-relative">
+                <div class="menu-card h-100 d-flex flex-column">
+                    <div class="position-relative flex-shrink-0">
                         {% if item.image %}
                         <img src="{{ item.image.url }}"
-                             class="card-img-top menu-card-img" alt="{{ item.name }}">
+                             class="card-img-top menu-card-img" alt="{{ item.name }}"
+                             style="height: 220px; object-fit: cover; width: 100%;">
                         {% elif item.image_url %}
                         <img src="{{ item.image_url }}"
-                             class="card-img-top menu-card-img" alt="{{ item.name }}">
+                             class="card-img-top menu-card-img" alt="{{ item.name }}"
+                             style="height: 220px; object-fit: cover; width: 100%;">
                         {% else %}
                         <img src="https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                             class="card-img-top menu-card-img" alt="{{ item.name }}">
+                             class="card-img-top menu-card-img" alt="{{ item.name }}"
+                             style="height: 220px; object-fit: cover; width: 100%;">
                         {% endif %}
                         <span class="price-tag">{{ item.price }} ₽</span>
                         {% if item.is_vegetarian %}
-                        <span class="badge badge-vegetarian position-absolute" style="top: 15px; left: 15px;">VEG</span>
+                        <span class="badge badge-vegetarian position-absolute" style="top: 15px; left: 15px;">Для вегетарианцев</span>
                         {% endif %}
                     </div>
-                    <div class="card-body">
-                        <h5 class="card-title">{{ item.name }}</h5>
-                        <p class="card-text">{{ item.description|truncatechars:80 }}</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-muted">
-                                {% if item.weight %}{{ item.weight }} • {% endif %}
-                                {% if item.calories %}{{ item.calories }} ккал{% endif %}
-                            </span>
-                            <button class="btn btn-danger add-to-cart-api"
+                    <div class="card-body d-flex flex-column flex-grow-1">
+                        <div class="mb-2">
+                            <h5 class="card-title mb-1">{{ item.name }}</h5>
+                            <p class="card-text text-muted small mb-3" style="min-height: 60px; line-height: 1.4;">
+                                {{ item.description|truncatechars:80 }}
+                            </p>
+                        </div>
+
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-muted small">
+                                    {% if item.weight %}{{ item.weight }}{% endif %}
+                                    {% if item.weight and item.calories %} • {% endif %}
+                                    {% if item.calories %}{{ item.calories }} ккал{% endif %}
+                                </span>
+                            </div>
+                            <button class="btn btn-danger w-100 add-to-cart-api"
                                     data-id="{{ item.id }}"
                                     data-name="{{ item.name }}"
                                     data-price="{{ item.price }}">
@@ -108,6 +119,125 @@
         </div>
     </div>
 </section>
+
+<style>
+    .menu-card {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: transform 0.3s, box-shadow 0.3s;
+        background: white;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .menu-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    }
+
+    .menu-card-img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+    }
+
+    .menu-card .card-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 1.25rem;
+    }
+
+    .menu-card .card-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.5rem;
+        min-height: 2.5rem;
+    }
+
+    .menu-card .card-text {
+        flex: 1;
+        color: #666;
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    .price-tag {
+        background: var(--italy-red);
+        color: white;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        position: absolute;
+        top: 15px;
+        right: 15px;
+    }
+
+    .badge-vegetarian {
+        background: var(--italy-green);
+        color: white;
+        padding: 5px 10px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        border-radius: 4px;
+    }
+
+    .add-to-cart-api {
+        border-radius: 8px;
+        padding: 10px 15px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    .add-to-cart-api:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+    }
+
+    /* Убедимся, что все карточки имеют одинаковую высоту */
+    #menu .row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    #menu .col-md-4 {
+        display: flex;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Адаптивность для мобильных */
+    @media (max-width: 768px) {
+        .menu-card-img {
+            height: 180px;
+        }
+
+        .menu-card .card-title {
+            font-size: 1rem;
+            min-height: auto;
+        }
+
+        .menu-card .card-text {
+            min-height: auto;
+            font-size: 0.85rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .menu-card-img {
+            height: 160px;
+        }
+
+        #menu .col-md-4 {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -214,7 +344,7 @@
 
         updateCartCount();
     });
-    </script>
+</script>
 
 <section class="py-5" id="about">
     <div class="container">
@@ -277,5 +407,6 @@
                 </div>
             </div>
         </div>
+    </div>
 </section>
 {% endblock %}

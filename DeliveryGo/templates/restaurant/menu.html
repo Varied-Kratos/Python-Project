@@ -14,20 +14,13 @@
     <div class="container">
         <div class="row g-2">
             {% for category in categories %}
-            <div class="col-6 col-md-3 col-lg-2">
+            <div class="col-6 col-md-4 col-lg-3 col-xl-2">
                 <a href="#category-{{ category.id }}"
                    class="d-block text-center text-decoration-none category-nav-item">
-                    <div class="p-2">
-                        <div class="category-nav-icon mb-1">
-                            {% if category.name == "Супы" %}
-                            🍲
-                            {% elif category.name == "Горячие блюда" %}
-                            🍛
-                            {% else %}
-                            {{ category.icon }}
-                            {% endif %}
+                    <div class="p-3">
+                        <div class="category-name fw-semibold">
+                            {{ category.name }}
                         </div>
-                        <small class="d-block">{{ category.name }}</small>
                     </div>
                 </a>
             </div>
@@ -41,19 +34,9 @@
         {% for category in categories %}
         <div id="category-{{ category.id }}" class="category-section mb-5 pt-4">
             <div class="d-flex align-items-center mb-4 category-header">
-                <h2 class="mb-0">
-                    <span class="category-icon">
-                        {% if category.name == "Супы" %}
-                        🍲
-                        {% elif category.name == "Горячие блюда" %}
-                        🍛
-                        {% else %}
-                        {{ category.icon }}
-                        {% endif %}
-                    </span>
+                <h2 class="mb-0 fw-bold text-uppercase">
                     {{ category.name }}
                 </h2>
-                <span class="badge bg-primary ms-3">{{ category.items.count }} блюд</span>
                 <a href="#top" class="ms-auto btn btn-sm btn-outline-secondary">
                     <i class="fas fa-arrow-up"></i> Наверх
                 </a>
@@ -137,89 +120,483 @@
 
 <style>
     .hero-section-menu {
-        background: linear-gradient(135deg, #34d399 0%, #059669 100%);
+        /* Итальянский триколор с градиентом */
+        background: linear-gradient(135deg,
+            rgba(0, 146, 70, 0.9) 0%,    /* Зеленый итальянского флага */
+            rgba(241, 242, 246, 0.9) 50%, /* Белый */
+            rgba(206, 43, 55, 0.9) 100%  /* Красный */
+        );
+        position: relative;
+        overflow: hidden;
+        padding: 4rem 0 !important;
+        min-height: 300px;
+        display: flex;
+        align-items: center;
     }
 
+    /* Текстура мрамора/стола */
+    .hero-section-menu::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image:
+            radial-gradient(circle at 25% 25%, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.15) 1%, transparent 2%),
+            radial-gradient(circle at 75% 75%, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.15) 1%, transparent 2%),
+            linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+        background-size: 60px 60px, 60px 60px, 100% 100%;
+        z-index: 0;
+    }
+
+    /* Декоративные итальянские элементы */
+    .hero-section-menu::after {
+        content: "🍝 🍕 🍷 🍤 🥗 🍰";
+        position: absolute;
+        bottom: 20px;
+        right: 30px;
+        font-size: 3rem;
+        opacity: 0.2;
+        z-index: 0;
+        animation: float 8s ease-in-out infinite;
+        white-space: nowrap;
+    }
+
+    .hero-section-menu .container {
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-section-menu h1 {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+        position: relative;
+        z-index: 1;
+        font-weight: 800 !important;
+        letter-spacing: -0.5px;
+        margin-bottom: 1rem !important;
+    }
+
+    .hero-section-menu p {
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        position: relative;
+        z-index: 1;
+        font-size: 1.25rem !important;
+        max-width: 600px;
+    }
+
+    /* Анимация плавного появления */
+    .hero-section-menu h1 {
+        animation: fadeInDown 1s ease-out;
+    }
+
+    .hero-section-menu p {
+        animation: fadeInUp 1s ease-out 0.3s both;
+    }
+
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0px) translateX(0px);
+            opacity: 0.15;
+        }
+        25% {
+            transform: translateY(-15px) translateX(10px);
+            opacity: 0.2;
+        }
+        50% {
+            transform: translateY(-25px) translateX(-10px);
+            opacity: 0.25;
+        }
+        75% {
+            transform: translateY(-10px) translateX(5px);
+            opacity: 0.2;
+        }
+    }
+
+    /* Декоративные линии */
+    .hero-section-menu::before {
+        animation: shimmer 3s infinite;
+    }
+
+    @keyframes shimmer {
+        0% { background-position: -100px -100px; }
+        100% { background-position: 100px 100px; }
+    }
+
+    /* Стили для навигации по категориям */
     .category-nav-item {
         background: white;
-        color: gray;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-        border: 2px solid transparent;
+        color: #2c3e50;
+        border-radius: 10px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid #e0e0e0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        margin: 4px;
+        overflow: hidden;
+        position: relative;
     }
 
     .category-nav-item:hover {
-        background: #f8f9fa;
-        border-color: #059669;
+        background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f5 100%);
+        border-color: #dc3545;
         transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.15);
+        color: #dc3545;
     }
 
-    .category-nav-icon {
-        font-size: 1.5rem;
+    .category-nav-item.active {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white;
+        border-color: #dc3545;
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.25);
+    }
+
+    .category-nav-item.active::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #ffc107, #fd7e14);
+    }
+
+    .category-name {
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+        position: relative;
+        padding: 8px 4px;
+        transition: all 0.3s ease;
+    }
+
+    .category-nav-item:hover .category-name {
+        transform: scale(1.05);
+    }
+
+    .category-nav-item.active .category-name {
+        font-weight: 700;
     }
 
     .category-section {
-        scroll-margin-top: 100px;
+        scroll-margin-top: 80px;
+        position: relative;
+    }
+
+    .category-section::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #e0e0e0, transparent);
     }
 
     .category-header {
-        padding-bottom: 15px;
-        border-bottom: 3px solid #059669;
+        padding-bottom: 12px;
         margin-bottom: 25px;
+        position: relative;
     }
 
-    .category-icon {
+    .category-header h2 {
+        color: #2c3e50;
         font-size: 1.8rem;
-        margin-right: 10px;
+        letter-spacing: 1px;
+        position: relative;
+        display: inline-block;
+        padding-bottom: 10px;
+    }
+
+    .category-header h2::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(90deg, #dc3545, #ff6b6b);
+        border-radius: 3px;
     }
 
     .food-card {
         transition: all 0.3s ease;
         border-radius: 12px;
         overflow: hidden;
+        border: 1px solid #e9ecef;
+        background: white;
     }
 
     .food-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+        border-color: #dc3545;
     }
 
     .food-image-placeholder {
         height: 160px;
-        background: linear-gradient(45deg, #f5f7fa 0%, #c3cfe2 100%);
+        background: linear-gradient(45deg, #f8f9fa 0%, #e9ecef 100%);
         display: flex;
         align-items: center;
         justify-content: center;
         color: #6c757d;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .food-image-placeholder::before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.4),
+            transparent
+        );
+        animation: shimmerPlaceholder 2s infinite;
+    }
+
+    @keyframes shimmerPlaceholder {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
     }
 
     .placeholder-content {
         text-align: center;
+        position: relative;
+        z-index: 1;
     }
 
     .category-section:target {
-        animation: highlight 2s;
+        animation: highlight 1s ease-out;
     }
 
     @keyframes highlight {
-        0% { background-color: transparent; }
-        50% { background-color: rgba(5, 150, 105, 0.1); }
-        100% { background-color: transparent; }
+        0% {
+            background-color: transparent;
+        }
+        50% {
+            background-color: rgba(220, 53, 69, 0.05);
+        }
+        100% {
+            background-color: transparent;
+        }
     }
 
     .btn-outline-secondary {
         border-radius: 20px;
-        padding: 5px 15px;
+        padding: 6px 16px;
+        border-width: 1px;
+        font-weight: 500;
+        font-size: 0.85rem;
+        color: #6c757d;
+        border-color: #dee2e6;
+        transition: all 0.3s ease;
     }
 
     .btn-outline-secondary:hover {
-        border-color: #059669;
-        color: #059669;
+        border-color: #dc3545;
+        color: #dc3545;
+        background-color: rgba(220, 53, 69, 0.05);
+        transform: translateY(-1px);
+    }
+
+    .add-to-cart-btn {
+        border-radius: 8px;
+        padding: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        background: #28a745;
+        border: none;
+        font-size: 0.9rem;
+        letter-spacing: 0.3px;
+    }
+
+    .add-to-cart-btn:hover {
+        background: #218838;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+    }
+
+    .add-to-cart-btn:active {
+        transform: translateY(0);
+    }
+
+    /* Стили для бейджей */
+    .badge {
+        font-size: 0.7rem;
+        font-weight: 600;
+        padding: 4px 8px;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .badge.bg-warning {
+        background: linear-gradient(135deg, #ffc107, #ffca2c) !important;
+    }
+
+    .badge.bg-danger {
+        background: linear-gradient(135deg, #dc3545, #e35d6a) !important;
+    }
+
+    .badge.bg-success {
+        background: linear-gradient(135deg, #198754, #20c997) !important;
+    }
+
+    /* Адаптивность для мобильных */
+    @media (max-width: 768px) {
+        .hero-section-menu {
+            padding: 3rem 0 !important;
+            min-height: 250px;
+        }
+
+        .hero-section-menu h1 {
+            font-size: 2.2rem;
+        }
+
+        .hero-section-menu p {
+            font-size: 1.1rem !important;
+        }
+
+        .hero-section-menu::after {
+            font-size: 2rem;
+            bottom: 10px;
+            right: 15px;
+        }
+
+        .category-nav-item {
+            padding: 10px !important;
+        }
+
+        .category-name {
+            font-size: 0.85rem;
+            padding: 6px 2px;
+        }
+
+        .category-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .btn-outline-secondary {
+            padding: 5px 12px;
+            font-size: 0.8rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .hero-section-menu {
+            padding: 2.5rem 0 !important;
+            min-height: 200px;
+        }
+
+        .hero-section-menu h1 {
+            font-size: 1.8rem;
+        }
+
+        .hero-section-menu p {
+            font-size: 1rem !important;
+        }
+
+        .hero-section-menu::after {
+            font-size: 1.5rem;
+            display: none;
+        }
+
+        .category-nav-item {
+            margin: 2px;
+        }
+
+        .category-name {
+            font-size: 0.8rem;
+        }
+
+        .category-header {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 15px;
+        }
+
+        .category-header h2 {
+            width: 100%;
+        }
+
+        .btn-outline-secondary {
+            align-self: flex-start;
+        }
+    }
+
+    @media (max-width: 400px) {
+        .category-nav-item {
+            padding: 8px 4px !important;
+        }
+
+        .category-name {
+            font-size: 0.75rem;
+        }
+    }
+
+    /* Анимация для перехода между категориями */
+    .category-section {
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Стили для скроллбара */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, #dc3545, #ff6b6b);
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(135deg, #c82333, #e35d6a);
     }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Плавная прокрутка к категориям
     document.querySelectorAll('a[href^="#category-"]').forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
@@ -227,53 +604,135 @@ document.addEventListener('DOMContentLoaded', function() {
             const targetElement = document.querySelector(targetId);
 
             if (targetElement) {
+                const headerOffset = 70;
+                const elementPosition = targetElement.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
                 window.scrollTo({
-                    top: targetElement.offsetTop - 80,
+                    top: offsetPosition,
                     behavior: 'smooth'
                 });
+
+                // Анимация активной категории
+                document.querySelectorAll('.category-nav-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                this.classList.add('active');
             }
         });
     });
 
+    // Отслеживание активной категории при прокрутке
     const categorySections = document.querySelectorAll('.category-section');
     const navLinks = document.querySelectorAll('.category-nav-item');
 
     function updateActiveCategory() {
         let currentSection = '';
+        let closestSection = null;
+        let closestDistance = Infinity;
 
         categorySections.forEach(section => {
-            const sectionTop = section.offsetTop - 100;
-            const sectionHeight = section.clientHeight;
+            const rect = section.getBoundingClientRect();
+            const distance = Math.abs(rect.top - 80);
 
-            if (window.scrollY >= sectionTop &&
-                window.scrollY < sectionTop + sectionHeight) {
-                currentSection = section.id;
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                closestSection = section;
             }
         });
+
+        if (closestSection) {
+            currentSection = closestSection.id;
+        }
 
         navLinks.forEach(link => {
             link.classList.remove('active');
             if (link.getAttribute('href') === `#${currentSection}`) {
                 link.classList.add('active');
-                link.style.borderColor = '#059669';
-                link.style.background = '#d1fae5';
-            } else {
-                link.style.borderColor = 'transparent';
-                link.style.background = 'white';
             }
         });
     }
 
-    window.addEventListener('scroll', updateActiveCategory);
+    // Функция для обновления количества товаров в корзине
+    function updateCartCount() {
+        fetch('/api/cart_count/')
+            .then(response => response.json())
+            .then(data => {
+                document.querySelectorAll('.cart-count').forEach(counter => {
+                    const oldCount = parseInt(counter.textContent) || 0;
+                    const newCount = data.count || 0;
 
+                    if (oldCount !== newCount) {
+                        counter.textContent = newCount;
+
+                        if (newCount > 0) {
+                            counter.classList.add('cart-update');
+                            setTimeout(() => {
+                                counter.classList.remove('cart-update');
+                            }, 300);
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Ошибка обновления корзины:', error);
+            });
+    }
+
+    // Функция для показа уведомлений
+    function showNotification(message, type = 'success') {
+        const existingAlert = document.querySelector('.custom-alert');
+        if (existingAlert) {
+            existingAlert.remove();
+        }
+
+        const alert = document.createElement('div');
+        alert.className = `custom-alert alert alert-${type} alert-dismissible fade show`;
+
+        const icon = type === 'success' ? 'check-circle' : 'exclamation-circle';
+        alert.innerHTML = `
+            <div class="d-flex align-items-center">
+                <i class="fas fa-${icon} me-2"></i>
+                <span class="flex-grow-1">${message}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        `;
+
+        Object.assign(alert.style, {
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            zIndex: '9999',
+            minWidth: '280px',
+            maxWidth: '350px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            borderRadius: '8px',
+            animation: 'slideIn 0.3s ease-out'
+        });
+
+        document.body.appendChild(alert);
+
+        setTimeout(() => {
+            if (alert.parentNode) {
+                alert.classList.add('fade');
+                setTimeout(() => alert.remove(), 150);
+            }
+        }, 3000);
+    }
+
+    // Обработчик для кнопок добавления в корзину
     document.querySelectorAll('.add-to-cart-btn').forEach(button => {
         button.addEventListener('click', function() {
             const itemId = this.dataset.id;
             const itemName = this.dataset.name;
 
-            const originalHtml = this.innerHTML;
-            this.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+            const originalText = this.innerHTML;
+            const originalClass = this.className;
+
+            this.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>';
             this.disabled = true;
+            this.classList.remove('btn-success');
+            this.classList.add('btn-secondary');
 
             fetch('/api/add_to_cart/', {
                 method: 'POST',
@@ -289,33 +748,43 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    this.innerHTML = '<i class="fas fa-check"></i> Добавлено';
-                    this.classList.remove('btn-success');
-                    this.classList.add('btn-primary');
+                    this.innerHTML = '<i class="fas fa-check me-1"></i>';
+                    this.classList.remove('btn-secondary');
+                    this.classList.add('btn-success');
 
                     updateCartCount();
-                    showNotification(data.message, 'success');
 
+                    // Показываем уведомление
+                    showNotification(`"${itemName}" добавлено в корзину`, 'success');
+
+                    // Восстанавливаем кнопку
                     setTimeout(() => {
-                        this.innerHTML = originalHtml;
-                        this.classList.remove('btn-primary');
-                        this.classList.add('btn-success');
+                        this.innerHTML = originalText;
+                        this.className = originalClass;
                         this.disabled = false;
-                    }, 2000);
+                    }, 1500);
                 } else {
-                    this.innerHTML = originalHtml;
-                    this.disabled = false;
-                    showNotification('Ошибка: ' + data.error, 'danger');
+                    throw new Error(data.error || 'Произошла ошибка');
                 }
             })
             .catch(error => {
-                this.innerHTML = originalHtml;
-                this.disabled = false;
-                showNotification('Ошибка сети', 'danger');
+                this.innerHTML = '<i class="fas fa-exclamation-circle me-1"></i>';
+                this.classList.remove('btn-secondary');
+                this.classList.add('btn-danger');
+                this.disabled = true;
+
+                showNotification(error.message, 'danger');
+
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.className = originalClass;
+                    this.disabled = false;
+                }, 2000);
             });
         });
     });
 
+    // Функция для получения CSRF токена
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -331,59 +800,81 @@ document.addEventListener('DOMContentLoaded', function() {
         return cookieValue;
     }
 
-    function updateCartCount() {
-        fetch('/api/cart_count/')
-            .then(response => response.json())
-            .then(data => {
-                document.querySelectorAll('.cart-count').forEach(counter => {
-                    counter.textContent = data.count;
-                    counter.classList.add('bounce');
-                    setTimeout(() => counter.classList.remove('bounce'), 300);
-                });
-            });
-    }
-
-    function showNotification(message, type = 'success') {
-        const alert = document.createElement('div');
-        alert.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
-        alert.style.cssText = `
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-            min-width: 300px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        `;
-
-        alert.innerHTML = `
-            <div class="d-flex align-items-center">
-                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
-                <span>${message}</span>
-                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
-            </div>
-        `;
-
-        document.body.appendChild(alert);
-
-        setTimeout(() => {
-            if (alert.parentNode) alert.remove();
-        }, 3000);
-    }
-
-    updateCartCount();
-    updateActiveCategory();
-
+    // Добавляем стили для анимаций
     const style = document.createElement('style');
     style.textContent = `
-        .bounce {
-            animation: bounce 0.3s;
+        .cart-update {
+            animation: cartPulse 0.3s ease;
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.5); }
+        @keyframes cartPulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+            }
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 0 0 5px rgba(220, 53, 69, 0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .custom-alert {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        /* Анимация при наведении на карточку */
+        .food-card {
+            transition: all 0.3s ease;
+        }
+
+        .food-card:hover .card-title {
+            color: #dc3545;
+        }
+
+        /* Анимация заголовков категорий */
+        .category-header h2 {
+            transition: all 0.3s ease;
+        }
+
+        .category-header:hover h2 {
+            transform: translateX(10px);
         }
     `;
     document.head.appendChild(style);
+
+    // Инициализация
+    let scrollTimeout;
+    window.addEventListener('scroll', function() {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(updateActiveCategory, 50);
+    });
+
+    updateActiveCategory();
+    updateCartCount();
+
+    // Первоначальная прокрутка к активной категории из URL
+    const hash = window.location.hash;
+    if (hash && document.querySelector(hash)) {
+        setTimeout(() => {
+            const element = document.querySelector(hash);
+            if (element) {
+                const yOffset = -80;
+                const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                window.scrollTo({top: y, behavior: 'auto'});
+            }
+        }, 100);
+    }
 });
 </script>
 {% endblock %}

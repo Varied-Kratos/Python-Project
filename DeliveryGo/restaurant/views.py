@@ -103,16 +103,13 @@ def cart_view(request):
     session_key = request.session.session_key
     cart_items = CartItem.objects.filter(session_key=session_key)
 
-    # Расчет суммы
     total_amount = 0
     for item in cart_items:
         total_amount += item.menu_item.price * item.quantity
 
-    # Стоимость доставки (бесплатно от 2000₽)
     free_delivery_threshold = 2000
     delivery_fee = 0 if total_amount >= free_delivery_threshold else 200
 
-    # Расчет сколько не хватает до бесплатной доставки
     needed_for_free = 0
     if total_amount < free_delivery_threshold:
         needed_for_free = free_delivery_threshold - total_amount
@@ -123,20 +120,18 @@ def cart_view(request):
         'delivery_fee': delivery_fee,
         'final_amount': total_amount + delivery_fee,
         'free_delivery_threshold': free_delivery_threshold,
-        'needed_for_free': needed_for_free,  # Добавлено
+        'needed_for_free': needed_for_free,
     }
     return render(request, 'restaurant/cart.html', context)
 
 @csrf_exempt
 def update_cart_item(request, item_id):
-    """Обновление количества товара в корзине"""
     if request.method == 'POST':
         try:
-            # Для отладки
             print(f"Updating cart item: {item_id}")
 
             data = json.loads(request.body)
-            action = data.get('action')  # 'increase', 'decrease', 'set'
+            action = data.get('action')
             quantity = int(data.get('quantity', 1))
 
             session_key = request.session.session_key
@@ -158,12 +153,10 @@ def update_cart_item(request, item_id):
 
             cart_item.save()
 
-            # Пересчет сумм
             cart_items = CartItem.objects.filter(session_key=session_key)
             total_amount = sum(item.menu_item.price * item.quantity for item in cart_items)
             delivery_fee = 0 if total_amount >= 2000 else 200
 
-            # Получаем общее количество товаров в корзине
             cart_count = cart_items.count()
 
             return JsonResponse({
@@ -205,7 +198,6 @@ def remove_cart_item(request, item_id):
             cart_item = CartItem.objects.get(id=item_id, session_key=session_key)
             cart_item.delete()
 
-            # Пересчет сумм
             cart_items = CartItem.objects.filter(session_key=session_key)
             total_amount = sum(item.menu_item.price * item.quantity for item in cart_items)
             delivery_fee = 0 if total_amount >= 2000 else 200
@@ -236,7 +228,6 @@ def checkout(request):
     total_amount = sum(item.menu_item.price * item.quantity for item in cart_items)
     delivery_fee = 0 if total_amount >= 2000 else 200
 
-    # Если пользователь авторизован, заполняем форму его данными
     if request.user.is_authenticated:
         user = request.user
         initial_data = {
@@ -288,7 +279,6 @@ def create_order(request):
             total_amount = sum(item.menu_item.price * item.quantity for item in cart_items)
             delivery_fee = 0 if total_amount >= 2000 else 200
 
-            # СОЗДАНИЕ ЗАКАЗА С ПОЛЬЗОВАТЕЛЕМ
             order = Order.objects.create(
                 customer_name=data['customer_name'],
                 phone=data['phone'],
@@ -303,7 +293,6 @@ def create_order(request):
                 total_amount=total_amount,
                 delivery_fee=delivery_fee,
                 session_key=session_key,
-                # ВАЖНО: связываем заказ с пользователем, если он авторизован
                 user=request.user if request.user.is_authenticated else None,
             )
 
@@ -315,10 +304,8 @@ def create_order(request):
                     price=cart_item.menu_item.price,
                 )
 
-            # Очищаем корзину
             cart_items.delete()
 
-            # Очищаем данные из сессии
             for key in ['customer_name', 'phone', 'email', 'delivery_address']:
                 if key in request.session:
                     del request.session[key]

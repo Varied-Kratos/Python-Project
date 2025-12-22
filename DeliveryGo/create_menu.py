@@ -2,12 +2,11 @@ import os
 import sys
 import django
 from django.core.files import File
+from restaurant.models import Category, MenuItem
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'DeliveryGo.settings')
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 django.setup()
-
-from restaurant.models import Category, MenuItem
 
 MenuItem.objects.all().delete()
 Category.objects.all().delete()

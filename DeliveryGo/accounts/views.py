@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import UserRegisterForm, UserLoginForm, ProfileUpdateForm, UserUpdateForm
 from .models import UserProfile
-from restaurant.models import Order  # Импортируем модель Order из restaurant
+from restaurant.models import Order
 
 
 def register(request):
@@ -42,7 +42,6 @@ def logout_view(request):
 
 @login_required
 def profile(request):
-    """Страница профиля с последними заказами"""
     user_orders = Order.objects.filter(user=request.user).order_by('-created_at')[:5]
 
     return render(request, 'accounts/profile.html', {
@@ -53,7 +52,6 @@ def profile(request):
 
 @login_required
 def profile_edit(request):
-    """Редактирование профиля"""
     if request.method == 'POST':
         user_form = UserUpdateForm(request.POST, instance=request.user)
         profile_form = ProfileUpdateForm(
@@ -79,7 +77,6 @@ def profile_edit(request):
 
 @login_required
 def user_orders(request):
-    """Страница всех заказов пользователя"""
     orders = Order.objects.filter(user=request.user).order_by('-created_at')
 
     return render(request, 'accounts/orders.html', {

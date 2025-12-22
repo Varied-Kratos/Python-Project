@@ -1,0 +1,360 @@
+{% extends 'restaurant/base.html' %}
+
+{% block title %}Регистрация - La Bella Italia{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-8 text-center">
+                <h1 class="display-6 fw-bold text-dark mb-3">Регистрация</h1>
+                <p class="lead text-muted">Создайте аккаунт для отслеживания заказов и получения специальных предложений</p>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                    <div class="card-header bg-white border-0 py-4">
+                        <h2 class="text-center mb-0 fw-semibold text-dark">Создать аккаунт</h2>
+                        <p class="text-center text-muted mt-2 mb-0">Заполните форму ниже для регистрации</p>
+                    </div>
+
+                    <div class="card-body p-4 p-md-5">
+                        <form method="post" class="needs-validation" novalidate>
+                            {% csrf_token %}
+
+                            {% if form.non_field_errors %}
+                            <div class="alert alert-danger alert-dismissible fade show rounded-3 mb-4" role="alert">
+                                {% for error in form.non_field_errors %}
+                                    <div>{{ error }}</div>
+                                {% endfor %}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                            {% endif %}
+
+                            <div class="mb-4">
+                                <label for="{{ form.username.id_for_label }}" class="form-label fw-medium text-dark mb-2">
+                                    <i class="fas fa-user me-2 text-italy"></i>Имя пользователя *
+                                </label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text bg-white border-end-0">
+                                        <i class="fas fa-user text-muted"></i>
+                                    </span>
+                                    <input type="text"
+                                           name="{{ form.username.name }}"
+                                           id="{{ form.username.id_for_label }}"
+                                           class="form-control form-control-lg {% if form.username.errors %}is-invalid{% endif %}"
+                                           value="{{ form.username.value|default:'' }}"
+                                           placeholder="Введите имя пользователя"
+                                           required>
+                                </div>
+                                {% if form.username.errors %}
+                                <div class="invalid-feedback d-block mt-2">
+                                    {% for error in form.username.errors %}
+                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                                <small class="form-text text-muted mt-1">От 3 до 150 символов. Только буквы, цифры и @/./+/-/_</small>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="{{ form.email.id_for_label }}" class="form-label fw-medium text-dark mb-2">
+                                    <i class="fas fa-envelope me-2 text-italy"></i>Email адрес *
+                                </label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text bg-white border-end-0">
+                                        <i class="fas fa-envelope text-muted"></i>
+                                    </span>
+                                    <input type="email"
+                                           name="{{ form.email.name }}"
+                                           id="{{ form.email.id_for_label }}"
+                                           class="form-control form-control-lg {% if form.email.errors %}is-invalid{% endif %}"
+                                           value="{{ form.email.value|default:'' }}"
+                                           placeholder="example@email.com"
+                                           required>
+                                </div>
+                                {% if form.email.errors %}
+                                <div class="invalid-feedback d-block mt-2">
+                                    {% for error in form.email.errors %}
+                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="{{ form.phone.id_for_label }}" class="form-label fw-medium text-dark mb-2">
+                                    <i class="fas fa-phone me-2 text-italy"></i>Номер телефона
+                                </label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text bg-white border-end-0">
+                                        <i class="fas fa-phone text-muted"></i>
+                                    </span>
+                                    <input type="tel"
+                                           name="{{ form.phone.name }}"
+                                           id="{{ form.phone.id_for_label }}"
+                                           class="form-control form-control-lg {% if form.phone.errors %}is-invalid{% endif %}"
+                                           value="{{ form.phone.value|default:'' }}"
+                                           placeholder="+7 (XXX) XXX-XX-XX">
+                                </div>
+                                <small class="form-text text-muted mt-1">Необязательно. Будет использован для уведомлений о заказах</small>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="id_password1" class="form-label fw-medium text-dark mb-2">
+                                    <i class="fas fa-lock me-2 text-italy"></i>Пароль *
+                                </label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text bg-white border-end-0">
+                                        <i class="fas fa-lock text-muted"></i>
+                                    </span>
+                                    <input type="password"
+                                           name="password1"
+                                           id="id_password1"
+                                           class="form-control form-control-lg {% if form.password1.errors %}is-invalid{% endif %}"
+                                           placeholder="Создайте надежный пароль"
+                                           required>
+                                    <button class="btn btn-outline-secondary border-start-0" type="button" id="togglePassword1">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                {% if form.password1.errors %}
+                                <div class="invalid-feedback d-block mt-2">
+                                    {% for error in form.password1.errors %}
+                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                                <div class="mt-2">
+                                    <small class="text-muted">Требования к паролю:</small>
+                                    <ul class="text-muted small mb-0 ps-3 mt-1">
+                                        <li>Не менее 8 символов</li>
+                                        <li>Не только цифры</li>
+                                        <li>Не слишком простой</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="mb-5">
+                                <label for="id_password2" class="form-label fw-medium text-dark mb-2">
+                                    <i class="fas fa-lock me-2 text-italy"></i>Подтверждение пароля *
+                                </label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text bg-white border-end-0">
+                                        <i class="fas fa-lock text-muted"></i>
+                                    </span>
+                                    <input type="password"
+                                           name="password2"
+                                           id="id_password2"
+                                           class="form-control form-control-lg {% if form.password2.errors %}is-invalid{% endif %}"
+                                           placeholder="Повторите пароль"
+                                           required>
+                                    <button class="btn btn-outline-secondary border-start-0" type="button" id="togglePassword2">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                {% if form.password2.errors %}
+                                <div class="invalid-feedback d-block mt-2">
+                                    {% for error in form.password2.errors %}
+                                        <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="d-grid mb-4">
+                                <button type="submit" class="btn btn-italy btn-lg fw-semibold py-3 rounded-3 shadow-sm">
+                                    <i class="fas fa-user-plus me-2"></i>Зарегистрироваться
+                                </button>
+                            </div>
+
+                            <div class="text-center pt-4 border-top">
+                                <p class="mb-0 text-muted">Уже есть аккаунт?
+                                    <a href="{% url 'accounts:login' %}" class="text-decoration-none fw-medium text-italy ms-1">
+                                        Войти в систему
+                                    </a>
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const togglePassword1 = document.getElementById('togglePassword1');
+    const togglePassword2 = document.getElementById('togglePassword2');
+    const password1 = document.getElementById('id_password1');
+    const password2 = document.getElementById('id_password2');
+
+    if (togglePassword1 && password1) {
+        togglePassword1.addEventListener('click', function() {
+            const type = password1.getAttribute('type') === 'password' ? 'text' : 'password';
+            password1.setAttribute('type', type);
+            const icon = this.querySelector('i');
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
+        });
+    }
+
+    if (togglePassword2 && password2) {
+        togglePassword2.addEventListener('click', function() {
+            const type = password2.getAttribute('type') === 'password' ? 'text' : 'password';
+            password2.setAttribute('type', type);
+            const icon = this.querySelector('i');
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
+        });
+    }
+
+    const phoneInput = document.querySelector('input[type="tel"]');
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function(e) {
+            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,1})(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/);
+            e.target.value = !x[2] ? x[1] : '+' + x[1] + ' (' + x[2] + (x[3] ? ') ' + x[3] : '') + (x[4] ? '-' + x[4] : '') + (x[5] ? '-' + x[5] : '');
+        });
+    }
+
+    const form = document.querySelector('form.needs-validation');
+    if (form) {
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    }
+});
+</script>
+
+<style>
+.form-control:focus {
+    border-color: #d4af37;
+    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
+}
+
+.input-group-lg .form-control,
+.input-group-lg .input-group-text {
+    padding: 1rem 1.25rem;
+    font-size: 1.1rem;
+}
+
+.input-group-text {
+    border-right: 0;
+    background-color: #f8f9fa;
+    color: #6c757d;
+}
+
+.input-group .form-control {
+    border-left: 0;
+    border-right: 0;
+}
+
+.input-group .form-control:focus {
+    border-color: #ced4da;
+    box-shadow: none;
+}
+
+.input-group:focus-within .input-group-text {
+    border-color: #d4af37;
+    color: #d4af37;
+}
+
+.input-group .btn-outline-secondary {
+    border-left: 0;
+    border-color: #ced4da;
+    color: #6c757d;
+    background-color: #f8f9fa;
+}
+
+.input-group .btn-outline-secondary:hover {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+.btn-italy {
+    background: linear-gradient(135deg, #d4af37 0%, #c19b2c 100%);
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+.btn-italy:hover {
+    background: linear-gradient(135deg, #c19b2c 0%, #a8841e 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(212, 175, 55, 0.3);
+    color: #fff;
+}
+
+.card {
+    border: 1px solid rgba(0,0,0,0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+}
+
+.text-italy {
+    color: #d4af37 !important;
+}
+
+.display-6 {
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.lead {
+    font-size: 1.25rem;
+    color: #6c757d;
+}
+
+.text-muted small ul {
+    list-style-type: none;
+    padding-left: 1.5rem;
+}
+
+.text-muted small ul li {
+    position: relative;
+    margin-bottom: 0.25rem;
+}
+
+.text-muted small ul li:before {
+    content: "•";
+    color: #d4af37;
+    position: absolute;
+    left: -1rem;
+}
+
+@media (max-width: 768px) {
+    .card-body {
+        padding: 2rem !important;
+    }
+
+    .input-group-lg .form-control,
+    .input-group-lg .input-group-text {
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+    }
+
+    .display-6 {
+        font-size: 2rem;
+    }
+
+    .lead {
+        font-size: 1.1rem;
+    }
+}
+</style>
+{% endblock %}

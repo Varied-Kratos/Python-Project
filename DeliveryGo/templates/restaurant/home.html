@@ -1,0 +1,410 @@
+{% extends 'restaurant/base.html' %}
+
+{% block title %}La Bella Italia - Главная{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">Настоящий вкус Италии в каждом блюде</h1>
+                <p class="lead mb-4">Мы готовим аутентичную итальянскую кухню по традиционным рецептам с 1998 года. Только свежие продукты и любовь к своему делу.</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="/menu/" class="btn btn-italy btn-lg">
+                        <i class="fas fa-utensils me-2"></i>Заказать сейчас
+                    </a>
+                    <a href="#menu" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-book me-2"></i>Посмотреть меню
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <div class="feature-icon">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <h4>Доставка в любой уголок Нижнего Новгорода.</h4>
+                    <p>Доставляем заказы за 60-120 минут. Качественная еда требует ожидания!</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <div class="feature-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h4>Свежие продукты</h4>
+                    <p>Используем фермерские овощи, итальянские сыры.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <div class="feature-icon">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <h4>Состав команды - повара, прямиком из Италии в тандеме с шеф-поварами из России</h4>
+                    <p>Готовят по традиционным рецептам, утверждавшимся годами.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-light" id="menu">
+    <div class="container">
+        <h2 class="text-center section-title">Популярно!</h2>
+
+        <div class="row g-4">
+            {% for item in bestsellers %}
+            <div class="col-md-4">
+                <div class="menu-card h-100 d-flex flex-column">
+                    <div class="position-relative flex-shrink-0">
+                        {% if item.image %}
+                        <img src="{{ item.image.url }}"
+                             class="card-img-top menu-card-img" alt="{{ item.name }}"
+                             style="height: 220px; object-fit: cover; width: 100%;">
+                        {% elif item.image_url %}
+                        <img src="{{ item.image_url }}"
+                             class="card-img-top menu-card-img" alt="{{ item.name }}"
+                             style="height: 220px; object-fit: cover; width: 100%;">
+                        {% else %}
+                        <img src="https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+                             class="card-img-top menu-card-img" alt="{{ item.name }}"
+                             style="height: 220px; object-fit: cover; width: 100%;">
+                        {% endif %}
+                        <span class="price-tag">{{ item.price }} ₽</span>
+                        {% if item.is_vegetarian %}
+                        <span class="badge badge-vegetarian position-absolute" style="top: 15px; left: 15px;">Для вегетарианцев</span>
+                        {% endif %}
+                    </div>
+                    <div class="card-body d-flex flex-column flex-grow-1">
+                        <div class="mb-2">
+                            <h5 class="card-title mb-1">{{ item.name }}</h5>
+                            <p class="card-text text-muted small mb-3" style="min-height: 60px; line-height: 1.4;">
+                                {{ item.description|truncatechars:80 }}
+                            </p>
+                        </div>
+
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-muted small">
+                                    {% if item.weight %}{{ item.weight }}{% endif %}
+                                    {% if item.weight and item.calories %} • {% endif %}
+                                    {% if item.calories %}{{ item.calories }} ккал{% endif %}
+                                </span>
+                            </div>
+                            <button class="btn btn-danger w-100 add-to-cart-api"
+                                    data-id="{{ item.id }}"
+                                    data-name="{{ item.name }}"
+                                    data-price="{{ item.price }}">
+                                <i class="fas fa-plus me-1"></i>В корзину
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-5">
+            <a href="/menu/" class="btn btn-italy btn-lg">
+                <i class="fas fa-book-open me-2"></i>Смотреть всё меню
+            </a>
+        </div>
+    </div>
+</section>
+
+<style>
+    .menu-card {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: transform 0.3s, box-shadow 0.3s;
+        background: white;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .menu-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    }
+
+    .menu-card-img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+    }
+
+    .menu-card .card-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 1.25rem;
+    }
+
+    .menu-card .card-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.5rem;
+        min-height: 2.5rem;
+    }
+
+    .menu-card .card-text {
+        flex: 1;
+        color: #666;
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    .price-tag {
+        background: var(--italy-red);
+        color: white;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        position: absolute;
+        top: 15px;
+        right: 15px;
+    }
+
+    .badge-vegetarian {
+        background: var(--italy-green);
+        color: white;
+        padding: 5px 10px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        border-radius: 4px;
+    }
+
+    .add-to-cart-api {
+        border-radius: 8px;
+        padding: 10px 15px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    .add-to-cart-api:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+    }
+
+    #menu .row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    #menu .col-md-4 {
+        display: flex;
+        margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .menu-card-img {
+            height: 180px;
+        }
+
+        .menu-card .card-title {
+            font-size: 1rem;
+            min-height: auto;
+        }
+
+        .menu-card .card-text {
+            min-height: auto;
+            font-size: 0.85rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .menu-card-img {
+            height: 160px;
+        }
+
+        #menu .col-md-4 {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function updateCartCount() {
+            fetch('/api/cart_count/')
+                .then(response => response.json())
+                .then(data => {
+                    document.querySelectorAll('.cart-count').forEach(counter => {
+                        counter.textContent = data.count;
+                    });
+                });
+        }
+
+        document.querySelectorAll('.add-to-cart-api').forEach(button => {
+            button.addEventListener('click', function() {
+                const itemId = this.dataset.id;
+                const itemName = this.dataset.name;
+                const originalHtml = this.innerHTML;
+
+                this.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+                this.disabled = true;
+
+                fetch('/api/add_to_cart/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({
+                        item_id: itemId,
+                        quantity: 1
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        this.innerHTML = '<i class="fas fa-check"></i> Добавлено';
+                        this.classList.remove('btn-danger');
+                        this.classList.add('btn-success');
+
+                        updateCartCount();
+                        showNotification(data.message, 'success');
+
+                        setTimeout(() => {
+                            this.innerHTML = originalHtml;
+                            this.classList.remove('btn-success');
+                            this.classList.add('btn-danger');
+                            this.disabled = false;
+                        }, 2000);
+                    } else {
+                        this.innerHTML = originalHtml;
+                        this.disabled = false;
+                        showNotification('Ошибка: ' + data.error, 'danger');
+                    }
+                })
+                .catch(error => {
+                    this.innerHTML = originalHtml;
+                    this.disabled = false;
+                    showNotification('Ошибка сети', 'danger');
+                });
+            });
+        });
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let cookie of cookies) {
+                    cookie = cookie.trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function showNotification(message, type = 'success') {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            alert.style.cssText = `
+                top: 20px;
+                right: 20px;
+                z-index: 9999;
+                min-width: 300px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            `;
+
+            alert.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>
+                    <span>${message}</span>
+                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+
+            document.body.appendChild(alert);
+
+            setTimeout(() => {
+                if (alert.parentNode) alert.remove();
+            }, 3000);
+        }
+
+        updateCartCount();
+    });
+</script>
+
+<section class="py-5" id="about">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <img src="https://images.unsplash.com/photo-1559925393-8be0ec4767c8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                     class="img-fluid rounded shadow" alt="Интерьер ресторана">
+            </div>
+            <div class="col-lg-6">
+                <h2 class="section-title text-start">Наша история</h2>
+                <p class="lead">С 1998 года мы дарим Нижнему вкус настоящей Италии.</p>
+                <p>Основатель ресторана привез в Россию рецепты своей бабушки из Неаполя. Мы не идем на компромиссы в качестве: наша моцарелла привозится из Италии, томаты выращиваются на экологически чистых фермах, а оливковое масло — только первого холодного отжима.</p>
+                <p>В нашем меню только аутентичные блюда, которые вы можете попробовать в маленьких тратториях Рима, Флоренции и Неаполя.</p>
+                <div class="mt-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-check-circle me-3" style="color: var(--italy-green); font-size: 1.2rem;"></i>
+                        <span>Более 32 000 довольных клиентов</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-check-circle me-3" style="color: var(--italy-green); font-size: 1.2rem;"></i>
+                        <span>Рейтинг 4.9/5 на Яндекс.Картах</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-check-circle me-3" style="color: var(--italy-green); font-size: 1.2rem;"></i>
+                        <span>Бесплатная доставка при заказе от 2 000 ₽</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-light" id="contact">
+    <div class="container">
+        <h2 class="text-center section-title">Закажите прямо сейчас</h2>
+        <p class="text-center lead mb-5">Доставляем горячую пиццу и свежую пасту в любую точку Нижнего!</p>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card border-0 shadow">
+                    <div class="card-body p-5">
+                        <div class="row text-center">
+                            <div class="col-md-6 mb-4 mb-md-0">
+                                <div class="p-3 h-100">
+                                    <i class="fas fa-phone-alt fa-3x mb-3" style="color: var(--italy-green);"></i>
+                                    <h5>По телефону</h5>
+                                    <p class="mb-2">+7 (999) 123-45-67</p>
+                                    <small class="text-muted">Ежедневно 10:00-23:00</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-3 h-100">
+                                    <i class="fas fa-globe fa-3x mb-3" style="color: var(--gold);"></i>
+                                    <h5>На сайте</h5>
+                                    <p>Заказывайте онлайн</p>
+                                    <a href="/menu/" class="btn btn-italy btn-sm mt-2">Сделать заказ</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

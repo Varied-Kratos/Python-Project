@@ -1,4 +1,3 @@
-<!-- restaurant/templates/restaurant/cart.html -->
 {% extends 'restaurant/base.html' %}
 
 {% block title %}Корзина - La Bella Italia{% endblock %}
@@ -15,7 +14,6 @@
     <div class="container">
         <div class="row">
             {% if not user.is_authenticated %}
-            <!-- Если пользователь не авторизован -->
             <div class="col-12">
                 <div class="text-center py-5 my-5">
                     <div class="mb-4">
@@ -38,7 +36,6 @@
             </div>
 
             {% elif cart_items %}
-            <!-- Если пользователь авторизован И в корзине есть товары -->
             <div class="col-lg-8">
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-body">
@@ -82,7 +79,6 @@
 
                                     <div class="col-4 col-md-4">
                                         <div class="d-flex flex-column align-items-end">
-                                            <!-- Цена и кнопки управления количеством в одной строке -->
                                             <div class="d-flex align-items-center justify-content-between w-100 mb-2">
                                                 <div class="quantity-control d-flex align-items-center">
                                                     <button class="btn btn-sm btn-outline-secondary decrease-btn"
@@ -112,7 +108,6 @@
                                                 </div>
                                             </div>
 
-                                            <!-- Кнопка удаления -->
                                             <button class="btn btn-sm btn-outline-danger remove-btn"
                                                     data-item-id="{{ item.id }}"
                                                     style="align-self: flex-end; margin-top: 8px;">
@@ -192,7 +187,6 @@
             </div>
 
             {% else %}
-            <!-- Если пользователь авторизован, но корзина пустая -->
             <div class="col-12">
                 <div class="text-center py-5 my-5">
                     <div class="mb-4">
@@ -302,7 +296,6 @@
     color: white;
 }
 
-/* Стили для сообщения об авторизации */
 .fa-lock {
     color: var(--italy-red);
 }
@@ -350,7 +343,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 3000);
     }
 
-    // Проверяем авторизацию перед выполнением действий с корзиной
     function checkAuthBeforeAction() {
         {% if not user.is_authenticated %}
         showNotification('Для выполнения этого действия необходимо войти в аккаунт', 'warning');
@@ -552,7 +544,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Добавляем обработчики только если пользователь авторизован
     {% if user.is_authenticated %}
     document.querySelectorAll('.increase-btn').forEach(btn => {
         btn.addEventListener('click', function() {
@@ -583,7 +574,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     {% endif %}
 
-    // Обновляем счетчик корзины
     fetch('/api/cart_count/')
         .then(response => response.json())
         .then(data => {

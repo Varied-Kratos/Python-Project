@@ -278,7 +278,6 @@
 {% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Превью аватара при выборе файла
     const avatarInput = document.querySelector('input[type="file"]');
     if (avatarInput) {
         avatarInput.addEventListener('change', function(e) {
@@ -286,7 +285,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    // Создаем или обновляем превью
                     let preview = document.querySelector('.avatar-preview');
                     if (!preview) {
                         preview = document.createElement('div');
@@ -306,7 +304,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Валидация формы
     const form = document.querySelector('form.needs-validation');
     if (form) {
         form.addEventListener('submit', function(event) {

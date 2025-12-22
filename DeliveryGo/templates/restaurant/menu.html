@@ -125,11 +125,10 @@
 
 <style>
     .hero-section-menu {
-        /* Итальянский триколор с градиентом */
         background: linear-gradient(135deg,
-            rgba(0, 146, 70, 0.9) 0%,    /* Зеленый итальянского флага */
-            rgba(241, 242, 246, 0.9) 50%, /* Белый */
-            rgba(206, 43, 55, 0.9) 100%  /* Красный */
+            rgba(0, 146, 70, 0.9) 0%,
+            rgba(241, 242, 246, 0.9) 50%,
+            rgba(206, 43, 55, 0.9) 100%
         );
         position: relative;
         overflow: hidden;
@@ -139,7 +138,6 @@
         align-items: center;
     }
 
-    /* Текстура мрамора/стола */
     .hero-section-menu::before {
         content: "";
         position: absolute;
@@ -155,7 +153,6 @@
         z-index: 0;
     }
 
-    /* Декоративные итальянские элементы */
     .hero-section-menu::after {
         content: "🍝 🍕 🍷 🍤 🥗 🍰";
         position: absolute;
@@ -190,7 +187,6 @@
         max-width: 600px;
     }
 
-    /* Анимация плавного появления */
     .hero-section-menu h1 {
         animation: fadeInDown 1s ease-out;
     }
@@ -240,7 +236,6 @@
         }
     }
 
-    /* Декоративные линии */
     .hero-section-menu::before {
         animation: shimmer 3s infinite;
     }
@@ -250,7 +245,6 @@
         100% { background-position: 100px 100px; }
     }
 
-    /* Стили для навигации по категориям */
     .category-nav-item {
         background: white;
         color: #2c3e50;
@@ -450,7 +444,6 @@
         transform: translateY(0);
     }
 
-    /* Стили для бейджей */
     .badge {
         font-size: 0.7rem;
         font-weight: 600;
@@ -471,7 +464,6 @@
         background: linear-gradient(135deg, #198754, #20c997) !important;
     }
 
-    /* Адаптивность для мобильных */
     @media (max-width: 768px) {
         .hero-section-menu {
             padding: 3rem 0 !important;
@@ -563,7 +555,6 @@
         }
     }
 
-    /* Анимация для перехода между категориями */
     .category-section {
         animation: fadeIn 0.5s ease-out;
     }
@@ -579,7 +570,6 @@
         }
     }
 
-    /* Стили для скроллбара */
     ::-webkit-scrollbar {
         width: 8px;
     }
@@ -601,7 +591,6 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Плавная прокрутка к категориям
     document.querySelectorAll('a[href^="#category-"]').forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
@@ -618,7 +607,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     behavior: 'smooth'
                 });
 
-                // Анимация активной категории
                 document.querySelectorAll('.category-nav-item').forEach(item => {
                     item.classList.remove('active');
                 });
@@ -627,7 +615,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Отслеживание активной категории при прокрутке
     const categorySections = document.querySelectorAll('.category-section');
     const navLinks = document.querySelectorAll('.category-nav-item');
 
@@ -658,7 +645,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Функция для обновления количества товаров в корзине
     function updateCartCount() {
         fetch('/api/cart_count/')
             .then(response => response.json())
@@ -684,7 +670,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
-    // Функция для показа уведомлений
     function showNotification(message, type = 'success') {
         const existingAlert = document.querySelector('.custom-alert');
         if (existingAlert) {
@@ -725,7 +710,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 3000);
     }
 
-    // Обработчик для кнопок добавления в корзину
     document.querySelectorAll('.add-to-cart-btn').forEach(button => {
         button.addEventListener('click', function() {
             const itemId = this.dataset.id;
@@ -759,10 +743,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     updateCartCount();
 
-                    // Показываем уведомление
                     showNotification(`"${itemName}" добавлено в корзину`, 'success');
 
-                    // Восстанавливаем кнопку
                     setTimeout(() => {
                         this.innerHTML = originalText;
                         this.className = originalClass;
@@ -789,7 +771,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Функция для получения CSRF токена
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -805,7 +786,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return cookieValue;
     }
 
-    // Добавляем стили для анимаций
     const style = document.createElement('style');
     style.textContent = `
         .cart-update {
@@ -838,7 +818,6 @@ document.addEventListener('DOMContentLoaded', function() {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         }
 
-        /* Анимация при наведении на карточку */
         .food-card {
             transition: all 0.3s ease;
         }
@@ -847,7 +826,6 @@ document.addEventListener('DOMContentLoaded', function() {
             color: #dc3545;
         }
 
-        /* Анимация заголовков категорий */
         .category-header h2 {
             transition: all 0.3s ease;
         }
@@ -858,7 +836,6 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
     document.head.appendChild(style);
 
-    // Инициализация
     let scrollTimeout;
     window.addEventListener('scroll', function() {
         clearTimeout(scrollTimeout);
@@ -868,7 +845,6 @@ document.addEventListener('DOMContentLoaded', function() {
     updateActiveCategory();
     updateCartCount();
 
-    // Первоначальная прокрутка к активной категории из URL
     const hash = window.location.hash;
     if (hash && document.querySelector(hash)) {
         setTimeout(() => {

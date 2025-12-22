@@ -1,4 +1,3 @@
-<!-- apps/accounts/templates/accounts/register.html -->
 {% extends 'restaurant/base.html' %}
 
 {% block title %}Регистрация - La Bella Italia{% endblock %}
@@ -34,7 +33,6 @@
                             </div>
                             {% endif %}
 
-                            <!-- Имя пользователя -->
                             <div class="mb-4">
                                 <label for="{{ form.username.id_for_label }}" class="form-label fw-medium text-dark mb-2">
                                     <i class="fas fa-user me-2 text-italy"></i>Имя пользователя *
@@ -61,7 +59,6 @@
                                 <small class="form-text text-muted mt-1">От 3 до 150 символов. Только буквы, цифры и @/./+/-/_</small>
                             </div>
 
-                            <!-- Email -->
                             <div class="mb-4">
                                 <label for="{{ form.email.id_for_label }}" class="form-label fw-medium text-dark mb-2">
                                     <i class="fas fa-envelope me-2 text-italy"></i>Email адрес *
@@ -87,7 +84,6 @@
                                 {% endif %}
                             </div>
 
-                            <!-- Телефон -->
                             <div class="mb-4">
                                 <label for="{{ form.phone.id_for_label }}" class="form-label fw-medium text-dark mb-2">
                                     <i class="fas fa-phone me-2 text-italy"></i>Номер телефона
@@ -106,7 +102,6 @@
                                 <small class="form-text text-muted mt-1">Необязательно. Будет использован для уведомлений о заказах</small>
                             </div>
 
-                            <!-- Пароль -->
                             <div class="mb-4">
                                 <label for="id_password1" class="form-label fw-medium text-dark mb-2">
                                     <i class="fas fa-lock me-2 text-italy"></i>Пароль *
@@ -142,7 +137,6 @@
                                 </div>
                             </div>
 
-                            <!-- Подтверждение пароля -->
                             <div class="mb-5">
                                 <label for="id_password2" class="form-label fw-medium text-dark mb-2">
                                     <i class="fas fa-lock me-2 text-italy"></i>Подтверждение пароля *
@@ -170,14 +164,12 @@
                                 {% endif %}
                             </div>
 
-                            <!-- Кнопка регистрации -->
                             <div class="d-grid mb-4">
                                 <button type="submit" class="btn btn-italy btn-lg fw-semibold py-3 rounded-3 shadow-sm">
                                     <i class="fas fa-user-plus me-2"></i>Зарегистрироваться
                                 </button>
                             </div>
 
-                            <!-- Ссылка на вход -->
                             <div class="text-center pt-4 border-top">
                                 <p class="mb-0 text-muted">Уже есть аккаунт?
                                     <a href="{% url 'accounts:login' %}" class="text-decoration-none fw-medium text-italy ms-1">
@@ -197,7 +189,6 @@
 {% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Показать/скрыть пароль
     const togglePassword1 = document.getElementById('togglePassword1');
     const togglePassword2 = document.getElementById('togglePassword2');
     const password1 = document.getElementById('id_password1');
@@ -223,7 +214,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Маска для телефона
     const phoneInput = document.querySelector('input[type="tel"]');
     if (phoneInput) {
         phoneInput.addEventListener('input', function(e) {
@@ -232,7 +222,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Валидация формы
     const form = document.querySelector('form.needs-validation');
     if (form) {
         form.addEventListener('submit', function(event) {
@@ -247,7 +236,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <style>
-/* Основные стили */
 .form-control:focus {
     border-color: #d4af37;
     box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
@@ -292,7 +280,6 @@ document.addEventListener('DOMContentLoaded', function() {
     color: #495057;
 }
 
-/* Стили для кнопки */
 .btn-italy {
     background: linear-gradient(135deg, #d4af37 0%, #c19b2c 100%);
     border: none;
@@ -309,7 +296,6 @@ document.addEventListener('DOMContentLoaded', function() {
     color: #fff;
 }
 
-/* Стили для карточки */
 .card {
     border: 1px solid rgba(0,0,0,0.08);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -320,7 +306,6 @@ document.addEventListener('DOMContentLoaded', function() {
     box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
 }
 
-/* Текст и заголовки */
 .text-italy {
     color: #d4af37 !important;
 }
@@ -335,7 +320,6 @@ document.addEventListener('DOMContentLoaded', function() {
     color: #6c757d;
 }
 
-/* Списки требований */
 .text-muted small ul {
     list-style-type: none;
     padding-left: 1.5rem;
@@ -353,7 +337,6 @@ document.addEventListener('DOMContentLoaded', function() {
     left: -1rem;
 }
 
-/* Адаптивность */
 @media (max-width: 768px) {
     .card-body {
         padding: 2rem !important;

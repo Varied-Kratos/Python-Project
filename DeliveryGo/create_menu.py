@@ -778,9 +778,6 @@ def find_image_for_item(item_name, image_dir):
 IMAGE_DIR = "restaurant/assets"
 
 if not os.path.exists(IMAGE_DIR):
-    print(f"Внимание: Папка с изображениями не найдена: {IMAGE_DIR}")
-    print("Создайте папку и положите туда изображения, или измените путь IMAGE_DIR")
-    print("Создаю блюда без изображений...")
     IMAGE_DIR = None
 
 total_items = len(menu_items)
@@ -798,34 +795,12 @@ for i, item_data in enumerate(menu_items, 1):
                 with open(image_path, 'rb') as f:
                     filename = os.path.basename(image_path)
                     menu_item.image.save(filename, File(f), save=True)
-
-                print(f"✓ {i}/{total_items}: {item_data['name']} - изображение загружено")
-                with_images += 1
-
-            except Exception as e:
-                print(f"✗ {i}/{total_items}: {item_data['name']} - ошибка загрузки: {str(e)}")
-                without_images += 1
-        else:
-            print(f"⚠ {i}/{total_items}: {item_data['name']} - изображение не найдено")
-            without_images += 1
-    else:
-        print(f"📝 {i}/{total_items}: {item_data['name']} - создано без изображения")
-        without_images += 1
-print("\n" + "="*50)
-print(f"Создано {total_items} блюд")
-print(f"С изображениями: {with_images}")
-print(f"Без изображений: {without_images}")
-
-# Обновляем URL для тех, у кого есть локальные изображения
 if IMAGE_DIR:
     print("\nОбновление URL изображений...")
     for menu_item in MenuItem.objects.filter(image__isnull=False):
         try:
-            # Генерируем image_url на основе загруженного изображения
             menu_item.image_url = menu_item.image.url
             menu_item.save()
             print(f"✓ {menu_item.name} - URL установлен: {menu_item.image_url}")
         except Exception as e:
             print(f"✗ {menu_item.name} - ошибка: {str(e)}")
-
-print("\nГотово! Запустите сервер: python manage.py runserver")

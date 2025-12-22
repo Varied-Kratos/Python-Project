@@ -1,4 +1,3 @@
-<!-- apps/accounts/templates/accounts/login.html -->
 {% extends 'restaurant/base.html' %}
 
 {% block title %}Вход - La Bella Italia{% endblock %}
@@ -34,7 +33,6 @@
                             </div>
                             {% endif %}
 
-                            <!-- Имя пользователя или Email -->
                             <div class="mb-4">
                                 <label for="{{ form.username.id_for_label }}" class="form-label fw-medium text-dark mb-2">
                                     <i class="fas fa-user me-2 text-italy"></i>Имя пользователя или Email *
@@ -60,7 +58,6 @@
                                 {% endif %}
                             </div>
 
-                            <!-- Пароль -->
                             <div class="mb-4">
                                 <label for="{{ form.password.id_for_label }}" class="form-label fw-medium text-dark mb-2">
                                     <i class="fas fa-lock me-2 text-italy"></i>Пароль *
@@ -93,7 +90,6 @@
                                 </div>
                             </div>
 
-                            <!-- Опция "Запомнить меня" -->
                             <div class="mb-4">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="rememberMe" name="remember_me">
@@ -103,14 +99,12 @@
                                 </div>
                             </div>
 
-                            <!-- Кнопка входа -->
                             <div class="d-grid mb-4">
                                 <button type="submit" class="btn btn-italy btn-lg fw-semibold py-3 rounded-3 shadow-sm">
                                     <i class="fas fa-sign-in-alt me-2"></i>Войти в аккаунт
                                 </button>
                             </div>
 
-                            <!-- Разделитель -->
                             <div class="position-relative my-4">
                                 <hr class="text-muted">
                                 <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted small">
@@ -118,21 +112,6 @@
                                 </span>
                             </div>
 
-                            <!-- Социальные сети (опционально) -->
-                            <div class="row g-3 mb-4">
-                                <div class="col-6">
-                                    <a href="#" class="btn btn-outline-primary w-100 py-3 rounded-3">
-                                        <i class="fab fa-google me-2"></i>Google
-                                    </a>
-                                </div>
-                                <div class="col-6">
-                                    <a href="#" class="btn btn-outline-dark w-100 py-3 rounded-3">
-                                        <i class="fab fa-apple me-2"></i>Apple
-                                    </a>
-                                </div>
-                            </div>
-
-                            <!-- Ссылки на регистрацию и главную -->
                             <div class="text-center pt-4 border-top">
                                 <p class="mb-3 text-muted">Еще нет аккаунта?
                                     <a href="{% url 'accounts:register' %}" class="text-decoration-none fw-medium text-italy ms-1">
@@ -157,7 +136,6 @@
 {% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Показать/скрыть пароль
     const togglePassword = document.getElementById('togglePassword');
     const password = document.getElementById('{{ form.password.id_for_label }}');
 
@@ -171,7 +149,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Валидация формы
     const form = document.querySelector('form.needs-validation');
     if (form) {
         form.addEventListener('submit', function(event) {
@@ -183,7 +160,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, false);
     }
 
-    // Автофокус на поле ввода
     const usernameField = document.getElementById('{{ form.username.id_for_label }}');
     if (usernameField) {
         usernameField.focus();
@@ -192,7 +168,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <style>
-/* Стили, соответствующие регистрации */
 .form-control:focus {
     border-color: #d4af37;
     box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
@@ -237,7 +212,6 @@ document.addEventListener('DOMContentLoaded', function() {
     color: #495057;
 }
 
-/* Стили для кнопки входа */
 .btn-italy {
     background: linear-gradient(135deg, #d4af37 0%, #c19b2c 100%);
     border: none;
@@ -254,7 +228,6 @@ document.addEventListener('DOMContentLoaded', function() {
     color: #fff;
 }
 
-/* Стили для кнопок социальных сетей */
 .btn-outline-primary {
     color: #4285F4;
     border-color: #4285F4;
@@ -279,7 +252,6 @@ document.addEventListener('DOMContentLoaded', function() {
     transform: translateY(-2px);
 }
 
-/* Стили для карточки */
 .card {
     border: 1px solid rgba(0,0,0,0.08);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -290,7 +262,6 @@ document.addEventListener('DOMContentLoaded', function() {
     box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
 }
 
-/* Текст и ссылки */
 .text-italy {
     color: #d4af37 !important;
 }
@@ -305,7 +276,6 @@ document.addEventListener('DOMContentLoaded', function() {
     color: #6c757d;
 }
 
-/* Checkbox стили */
 .form-check-input:checked {
     background-color: #d4af37;
     border-color: #d4af37;
@@ -316,14 +286,12 @@ document.addEventListener('DOMContentLoaded', function() {
     box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
 }
 
-/* Разделитель */
 .position-relative .text-muted {
     background-color: white;
     padding: 0 15px;
     font-size: 0.9rem;
 }
 
-/* Адаптивность */
 @media (max-width: 768px) {
     .card-body {
         padding: 2rem !important;
@@ -347,7 +315,6 @@ document.addEventListener('DOMContentLoaded', function() {
         padding: 0.75rem 1.5rem !important;
     }
 
-    /* На мобильных убираем социальные кнопки или делаем их вертикальными */
     .row.g-3.mb-4 {
         flex-direction: column;
     }
@@ -358,7 +325,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 }
 
-/* Анимация для фокуса поля ввода */
 @keyframes pulse {
     0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
     70% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }

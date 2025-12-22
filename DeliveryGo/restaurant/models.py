@@ -61,7 +61,6 @@ class CartItem(models.Model):
 
     @property
     def total_price(self):
-        """Возвращает общую цену для этого элемента корзины"""
         return self.menu_item.price * self.quantity
 
 
@@ -84,14 +83,13 @@ class Order(models.Model):
     customer_name = models.CharField(max_length=100, verbose_name='Имя')
     phone = models.CharField(max_length=20, verbose_name='Телефон')
 
-    # ВАЖНО: это поле должно быть для связи с пользователем
     user = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
         verbose_name='Пользователь',
-        related_name='orders'  # Добавьте related_name для удобства
+        related_name='orders'
     )
 
     email = models.EmailField(blank=True, verbose_name='Email')

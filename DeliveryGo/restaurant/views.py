@@ -101,7 +101,7 @@ def get_cart_count(request):
 
     return JsonResponse({'count': count})
 
-
+@login_required(login_url='accounts:login')
 def cart_view(request):
     session_key = request.session.session_key
     cart_items = CartItem.objects.filter(session_key=session_key)

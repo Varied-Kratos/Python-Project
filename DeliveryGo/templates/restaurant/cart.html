@@ -14,12 +14,40 @@
 <section class="py-5">
     <div class="container">
         <div class="row">
-            {% if cart_items %}
-            <!-- Если в корзине есть товары -->
+            {% if not user.is_authenticated %}
+            <!-- Если пользователь не авторизован -->
+            <div class="col-12">
+                <div class="text-center py-5 my-5">
+                    <div class="mb-4">
+                        <i class="fas fa-lock fa-4x text-muted mb-4"></i>
+                    </div>
+                    <h3 class="mb-3">Требуется авторизация</h3>
+                    <p class="text-muted mb-4">Для доступа к корзине необходимо войти в аккаунт</p>
+                    <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+                        <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="btn btn-italy btn-lg">
+                            <i class="fas fa-sign-in-alt me-2"></i>Войти в аккаунт
+                        </a>
+                        <a href="{% url 'accounts:register' %}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-user-plus me-2"></i>Создать аккаунт
+                        </a>
+                        <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-lg">
+                            <i class="fas fa-home me-2"></i>На главную
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            {% elif cart_items %}
+            <!-- Если пользователь авторизован И в корзине есть товары -->
             <div class="col-lg-8">
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-body">
-                        <h3 class="mb-4">Товары в корзине</h3>
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h3 class="mb-0">Товары в корзине</h3>
+                            <span class="badge bg-primary">
+                                <i class="fas fa-user me-1"></i>{{ user.username }}
+                            </span>
+                        </div>
 
                         <div class="cart-items">
                             {% for item in cart_items %}
@@ -131,16 +159,16 @@
                                 </span>
                             </div>
                             {% if total_amount < free_delivery_threshold %}
-<div class="alert alert-info small p-2 mb-3" id="free-delivery-alert">
-    <i class="fas fa-info-circle me-1"></i>
-    Добавьте товаров на <span id="needed-for-free">{{ needed_for_free|floatformat:"0" }}</span> ₽ для бесплатной доставки
-</div>
-{% else %}
-<div class="alert alert-success small p-2 mb-3" style="display: none;" id="free-delivery-alert">
-    <i class="fas fa-check-circle me-1"></i>
-    Бесплатная доставка!
-</div>
-{% endif %}
+                            <div class="alert alert-info small p-2 mb-3" id="free-delivery-alert">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Добавьте товаров на <span id="needed-for-free">{{ needed_for_free|floatformat:"0" }}</span> ₽ для бесплатной доставки
+                            </div>
+                            {% else %}
+                            <div class="alert alert-success small p-2 mb-3" style="display: none;" id="free-delivery-alert">
+                                <i class="fas fa-check-circle me-1"></i>
+                                Бесплатная доставка!
+                            </div>
+                            {% endif %}
                             <hr>
                             <div class="d-flex justify-content-between mb-4">
                                 <span class="h5">Итого:</span>
@@ -149,7 +177,8 @@
                         </div>
 
                         <div class="d-grid">
-                            <a href="/checkout/" class="btn btn-italy btn-lg">                              <i class="fas fa-shopping-bag me-2"></i>Перейти к оформлению
+                            <a href="/checkout/" class="btn btn-italy btn-lg">
+                                <i class="fas fa-shopping-bag me-2"></i>Перейти к оформлению
                             </a>
                         </div>
 
@@ -163,7 +192,7 @@
             </div>
 
             {% else %}
-            <!-- Если корзина пустая -->
+            <!-- Если пользователь авторизован, но корзина пустая -->
             <div class="col-12">
                 <div class="text-center py-5 my-5">
                     <div class="mb-4">
@@ -272,6 +301,23 @@
     background-color: #dc3545;
     color: white;
 }
+
+/* Стили для сообщения об авторизации */
+.fa-lock {
+    color: var(--italy-red);
+}
+
+.btn-lg {
+    min-width: 200px;
+    margin: 5px;
+}
+
+@media (max-width: 576px) {
+    .btn-lg {
+        min-width: 100%;
+        margin: 5px 0;
+    }
+}
 </style>
 
 <script>
@@ -304,7 +350,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 3000);
     }
 
+    // Проверяем авторизацию перед выполнением действий с корзиной
+    function checkAuthBeforeAction() {
+        {% if not user.is_authenticated %}
+        showNotification('Для выполнения этого действия необходимо войти в аккаунт', 'warning');
+        return false;
+        {% endif %}
+        return true;
+    }
+
     function updateCartItem(itemId, action) {
+        if (!checkAuthBeforeAction()) return;
+
         const itemElement = document.querySelector(`.cart-item[data-item-id="${itemId}"]`);
         if (!itemElement) {
             console.error('Item element not found:', itemId);
@@ -331,6 +388,13 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => {
             if (!response.ok) {
+                if (response.status === 401) {
+                    showNotification('Требуется авторизация. Пожалуйста, войдите в аккаунт.', 'warning');
+                    setTimeout(() => {
+                        window.location.href = "{% url 'accounts:login' %}?next={{ request.path }}";
+                    }, 2000);
+                    return Promise.reject('Unauthorized');
+                }
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
@@ -364,16 +428,22 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
-            if (btn) {
+            if (btn && error !== 'Unauthorized') {
                 btn.innerHTML = action === 'increase' ? '<i class="fas fa-plus"></i>' : '<i class="fas fa-minus"></i>';
                 btn.disabled = false;
             }
 
-            showNotification('Ошибка сети. Проверьте подключение.', 'danger');
+            if (error !== 'Unauthorized') {
+                showNotification('Ошибка сети. Проверьте подключение.', 'danger');
+            }
         });
     }
 
     function removeCartItem(itemId) {
+        if (!checkAuthBeforeAction()) return;
+
+        if (!confirm('Удалить товар из корзины?')) return;
+
         fetch(`/cart/remove/${itemId}/`, {
             method: 'POST',
             headers: {
@@ -383,6 +453,13 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => {
             if (!response.ok) {
+                if (response.status === 401) {
+                    showNotification('Требуется авторизация. Пожалуйста, войдите в аккаунт.', 'warning');
+                    setTimeout(() => {
+                        window.location.href = "{% url 'accounts:login' %}?next={{ request.path }}";
+                    }, 2000);
+                    return Promise.reject('Unauthorized');
+                }
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
@@ -406,44 +483,46 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
-            showNotification('Ошибка сети', 'danger');
+            if (error !== 'Unauthorized') {
+                showNotification('Ошибка сети', 'danger');
+            }
         });
     }
 
-function updateCartTotals(data) {
-    const subtotalEl = document.getElementById('subtotal');
-    const deliveryFeeEl = document.getElementById('delivery-fee');
-    const totalEl = document.getElementById('total');
-    const neededForFreeEl = document.getElementById('needed-for-free');
+    function updateCartTotals(data) {
+        const subtotalEl = document.getElementById('subtotal');
+        const deliveryFeeEl = document.getElementById('delivery-fee');
+        const totalEl = document.getElementById('total');
+        const neededForFreeEl = document.getElementById('needed-for-free');
 
-    if (subtotalEl && data.total_amount !== undefined) {
-        subtotalEl.textContent = Math.round(data.total_amount) + ' ₽';
-    }
-    if (deliveryFeeEl && data.delivery_fee !== undefined) {
-        if (data.total_amount >= 2000) {
-            deliveryFeeEl.innerHTML = '<span class="text-success">Бесплатно</span>';
-            if (neededForFreeEl) {
-                const alertDiv = neededForFreeEl.closest('.alert');
-                if (alertDiv) {
-                    alertDiv.style.display = 'none';
+        if (subtotalEl && data.total_amount !== undefined) {
+            subtotalEl.textContent = Math.round(data.total_amount) + ' ₽';
+        }
+        if (deliveryFeeEl && data.delivery_fee !== undefined) {
+            if (data.total_amount >= 2000) {
+                deliveryFeeEl.innerHTML = '<span class="text-success">Бесплатно</span>';
+                if (neededForFreeEl) {
+                    const alertDiv = neededForFreeEl.closest('.alert');
+                    if (alertDiv) {
+                        alertDiv.style.display = 'none';
+                    }
                 }
-            }
-        } else {
-            deliveryFeeEl.textContent = Math.round(data.delivery_fee) + ' ₽';
-            if (neededForFreeEl) {
-                const alertDiv = neededForFreeEl.closest('.alert');
-                if (alertDiv) {
-                    alertDiv.style.display = 'block';
+            } else {
+                deliveryFeeEl.textContent = Math.round(data.delivery_fee) + ' ₽';
+                if (neededForFreeEl) {
+                    const alertDiv = neededForFreeEl.closest('.alert');
+                    if (alertDiv) {
+                        alertDiv.style.display = 'block';
+                    }
+                    const needed = 2000 - data.total_amount;
+                    neededForFreeEl.textContent = Math.round(needed);
                 }
-                const needed = 2000 - data.total_amount;
-                neededForFreeEl.textContent = Math.round(needed);
             }
         }
+        if (totalEl && data.final_amount !== undefined) {
+            totalEl.textContent = Math.round(data.final_amount) + ' ₽';
+        }
     }
-    if (totalEl && data.final_amount !== undefined) {
-        totalEl.textContent = Math.round(data.final_amount) + ' ₽';
-    }
-}
 
     function updateCartCount(count) {
         document.querySelectorAll('.cart-count').forEach(counter => {
@@ -454,6 +533,8 @@ function updateCartTotals(data) {
     }
 
     function clearCart() {
+        if (!checkAuthBeforeAction()) return;
+
         const itemIds = [];
         document.querySelectorAll('.cart-item').forEach(item => {
             itemIds.push(item.dataset.itemId);
@@ -471,6 +552,8 @@ function updateCartTotals(data) {
         }
     }
 
+    // Добавляем обработчики только если пользователь авторизован
+    {% if user.is_authenticated %}
     document.querySelectorAll('.increase-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const itemId = this.dataset.itemId;
@@ -488,9 +571,7 @@ function updateCartTotals(data) {
     document.querySelectorAll('.remove-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const itemId = this.dataset.itemId;
-            if (confirm('Удалить товар из корзины?')) {
-                removeCartItem(itemId);
-            }
+            removeCartItem(itemId);
         });
     });
 
@@ -500,7 +581,9 @@ function updateCartTotals(data) {
             clearCart();
         });
     }
+    {% endif %}
 
+    // Обновляем счетчик корзины
     fetch('/api/cart_count/')
         .then(response => response.json())
         .then(data => {

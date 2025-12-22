@@ -432,7 +432,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // Функция для получения CSRF токена
         function getCookie(name) {
             let cookieValue = null;
             if (document.cookie && document.cookie !== '') {
@@ -449,7 +448,6 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Обновление счетчика корзины
             function updateCartCount() {
                 fetch("{% url 'cart_count' %}")
                     .then(response => {
@@ -480,14 +478,10 @@
                         console.error('Ошибка при получении количества корзины:', error);
                     });
             }
-
-            // Изначальное обновление счетчика
             updateCartCount();
 
-            // Обновляем каждые 30 секунд на случай, если корзина изменилась в другой вкладке
             setInterval(updateCartCount, 30000);
 
-            // Обработчики для кнопок добавления в корзину (если они есть на странице)
             document.querySelectorAll('.add-to-cart').forEach(button => {
                 button.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -501,11 +495,9 @@
                         return;
                     }
 
-                    // Показываем состояние загрузки
                     buttonElement.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Добавляем...';
                     buttonElement.disabled = true;
 
-                    // Отправляем запрос на добавление в корзину
                     fetch("{% url 'add_to_cart_api' %}", {
                         method: 'POST',
                         headers: {
@@ -525,15 +517,12 @@
                     })
                     .then(data => {
                         if (data.success) {
-                            // Обновляем счетчик корзины
                             updateCartCount();
 
-                            // Показываем успешное состояние
                             buttonElement.innerHTML = '<i class="fas fa-check me-1"></i> Добавлено';
                             buttonElement.classList.remove('btn-danger');
                             buttonElement.classList.add('btn-success');
 
-                            // Возвращаем исходное состояние через 2 секунды
                             setTimeout(() => {
                                 buttonElement.innerHTML = originalHtml;
                                 buttonElement.classList.remove('btn-success');
@@ -541,7 +530,6 @@
                                 buttonElement.disabled = false;
                             }, 2000);
 
-                            // Показываем всплывающее уведомление
                             showNotification('Товар успешно добавлен в корзину!', 'success');
                         } else {
                             throw new Error(data.error || 'Не удалось добавить товар');
@@ -550,13 +538,11 @@
                     .catch(error => {
                         console.error('Ошибка:', error);
 
-                        // Показываем состояние ошибки
                         buttonElement.innerHTML = '<i class="fas fa-times me-1"></i> Ошибка';
                         buttonElement.classList.remove('btn-danger');
                         buttonElement.classList.add('btn-warning');
                         buttonElement.disabled = true;
 
-                        // Возвращаем исходное состояние через 2 секунды
                         setTimeout(() => {
                             buttonElement.innerHTML = originalHtml;
                             buttonElement.classList.remove('btn-warning');
@@ -569,9 +555,7 @@
                 });
             });
 
-            // Функция для показа уведомлений
             function showNotification(message, type = 'success') {
-                // Создаем элемент уведомления
                 const notification = document.createElement('div');
                 notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
                 notification.style.cssText = `
@@ -594,7 +578,6 @@
 
                 document.body.appendChild(notification);
 
-                // Автоматически скрываем через 3 секунды
                 setTimeout(() => {
                     if (notification.parentNode) {
                         notification.classList.remove('show');
@@ -603,7 +586,6 @@
                 }, 3000);
             }
 
-            // Добавляем стиль для анимации уведомления
             const style = document.createElement('style');
             style.textContent = `
                 @keyframes slideIn {

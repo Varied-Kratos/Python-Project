@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator
 import uuid
 from django.utils.text import slugify
+from django.contrib.auth.models import User
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -63,6 +64,7 @@ class CartItem(models.Model):
         """Возвращает общую цену для этого элемента корзины"""
         return self.menu_item.price * self.quantity
 
+
 class Order(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Ожидает обработки'),
@@ -81,6 +83,17 @@ class Order(models.Model):
     order_number = models.CharField(max_length=20, unique=True, blank=True)
     customer_name = models.CharField(max_length=100, verbose_name='Имя')
     phone = models.CharField(max_length=20, verbose_name='Телефон')
+
+    # ВАЖНО: это поле должно быть для связи с пользователем
+    user = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='Пользователь',
+        related_name='orders'  # Добавьте related_name для удобства
+    )
+
     email = models.EmailField(blank=True, verbose_name='Email')
     delivery_address = models.TextField(verbose_name='Адрес доставки')
     apartment = models.CharField(max_length=20, blank=True, verbose_name='Квартира/офис')
@@ -113,7 +126,6 @@ class Order(models.Model):
             self.order_number = f"ORD-{uuid.uuid4().hex[:8].upper()}"
         self.final_amount = self.total_amount + self.delivery_fee
         super().save(*args, **kwargs)
-
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')

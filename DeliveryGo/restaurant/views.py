@@ -7,6 +7,12 @@ from django.core.validators import ValidationError
 from django.core.exceptions import ObjectDoesNotExist
 import json
 from .models import Category, MenuItem, CartItem, Order, OrderItem
+import json
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from .models import CartItem, MenuItem, Order
+from decimal import Decimal
 
 def home(request):
     bestsellers = MenuItem.objects.filter(is_bestseller=True, is_available=True)[:6]
@@ -222,7 +228,6 @@ def remove_cart_item(request, item_id):
 
     return JsonResponse({'success': False, 'error': 'Метод не разрешен'})
 
-
 def checkout(request):
     session_key = request.session.session_key
     cart_items = CartItem.objects.filter(session_key=session_key)
@@ -234,13 +239,22 @@ def checkout(request):
     total_amount = sum(item.menu_item.price * item.quantity for item in cart_items)
     delivery_fee = 0 if total_amount >= 2000 else 200
 
-    # Сохранение данных формы при ошибках
-    initial_data = {
-        'customer_name': request.session.get('customer_name', ''),
-        'phone': request.session.get('phone', ''),
-        'email': request.session.get('email', ''),
-        'delivery_address': request.session.get('delivery_address', ''),
-    }
+    # Если пользователь авторизован, заполняем форму его данными
+    if request.user.is_authenticated:
+        user = request.user
+        initial_data = {
+            'customer_name': f"{user.first_name} {user.last_name}".strip() or user.username,
+            'email': user.email,
+            'phone': user.userprofile.phone if hasattr(user, 'userprofile') and user.userprofile.phone else '',
+            'delivery_address': user.userprofile.address if hasattr(user, 'userprofile') and user.userprofile.address else '',
+        }
+    else:
+        initial_data = {
+            'customer_name': request.session.get('customer_name', ''),
+            'phone': request.session.get('phone', ''),
+            'email': request.session.get('email', ''),
+            'delivery_address': request.session.get('delivery_address', ''),
+        }
 
     context = {
         'cart_items': cart_items,
@@ -250,7 +264,6 @@ def checkout(request):
         'initial_data': initial_data,
     }
     return render(request, 'restaurant/checkout.html', context)
-
 
 @csrf_exempt
 @transaction.atomic
@@ -278,6 +291,7 @@ def create_order(request):
             total_amount = sum(item.menu_item.price * item.quantity for item in cart_items)
             delivery_fee = 0 if total_amount >= 2000 else 200
 
+            # СОЗДАНИЕ ЗАКАЗА С ПОЛЬЗОВАТЕЛЕМ
             order = Order.objects.create(
                 customer_name=data['customer_name'],
                 phone=data['phone'],
@@ -292,6 +306,8 @@ def create_order(request):
                 total_amount=total_amount,
                 delivery_fee=delivery_fee,
                 session_key=session_key,
+                # ВАЖНО: связываем заказ с пользователем, если он авторизован
+                user=request.user if request.user.is_authenticated else None,
             )
 
             for cart_item in cart_items:
@@ -302,8 +318,10 @@ def create_order(request):
                     price=cart_item.menu_item.price,
                 )
 
+            # Очищаем корзину
             cart_items.delete()
 
+            # Очищаем данные из сессии
             for key in ['customer_name', 'phone', 'email', 'delivery_address']:
                 if key in request.session:
                     del request.session[key]
@@ -319,7 +337,6 @@ def create_order(request):
             return JsonResponse({'success': False, 'error': str(e)})
 
     return JsonResponse({'success': False, 'error': 'Метод не разрешен'})
-
 
 def order_confirmation(request, order_id):
     order = get_object_or_404(Order, id=order_id)
@@ -371,3 +388,8 @@ def get_cart_data(request):
         'final_amount': float(total_amount + delivery_fee),
         'items': items_data,
     })
+def about(request):
+    return render(request, 'restaurant/about.html')
+
+def contact(request):
+    return render(request, 'restaurant/contact.html')

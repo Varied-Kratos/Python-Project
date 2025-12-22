@@ -224,6 +224,15 @@
             align-items: center;
             justify-content: center;
         }
+
+        /* Стили для отображения авторизации */
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 5px;
+        }
     </style>
 
     {% block extra_css %}{% endblock %}
@@ -231,7 +240,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="/">
+            <a class="navbar-brand" href="{% url 'home' %}">
                 <i class="fas fa-pizza-slice me-2" style="color: var(--italy-red);"></i>
                 La Bella Italia
             </a>
@@ -243,23 +252,68 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/">Главная</a>
+                        <a class="nav-link" href="{% url 'home' %}">Главная</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/menu/">Меню</a>
+                        <a class="nav-link" href="{% url 'menu' %}">Меню</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#about">О нас</a>
+                        <a class="nav-link" href="{% url 'about' %}">О нас</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#contact">Контакты</a>
+                        <a class="nav-link" href="{% url 'contact' %}">Контакты</a>
                     </li>
-                        <li class="nav-item ms-2">
-                            <a class="btn btn-outline-danger cart-btn" href="{% url 'restaurant:cart' %}">
-                                <i class="fas fa-shopping-cart"></i>
-                                <span class="cart-count">0</span>
+
+                    {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user me-1"></i>{{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'accounts:profile' %}">
+                                        <i class="fas fa-user-circle me-2"></i>Личный кабинет
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'accounts:profile_edit' %}">
+                                        <i class="fas fa-edit me-2"></i>Редактировать профиль
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'accounts:orders' %}">
+                                        <i class="fas fa-list-alt me-2"></i>Мои заказы
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="{% url 'accounts:logout' %}">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Выйти
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <!-- Пользователь не авторизован -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'accounts:login' %}">
+                                <i class="fas fa-sign-in-alt me-1"></i>Войти
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'accounts:register' %}">
+                                <i class="fas fa-user-plus me-1"></i>Регистрация
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    <!-- Корзина (всегда видна) -->
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-outline-danger cart-btn" href="{% url 'cart' %}">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-count">0</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -293,7 +347,7 @@
                 <div class="col-md-4 mb-4">
                     <h5>Быстрые ссылки</h5>
                     <ul class="list-unstyled mt-3">
-                        <li class="mb-2"><a href="/menu/">Меню</a></li>
+                        <li class="mb-2"><a href="{% url 'menu' %}">Меню</a></li>
                         <li class="mb-2"><a href="#about">О нас</a></li>
                         <li class="mb-2"><a href="#delivery">Доставка и оплата</a></li>
                         <li class="mb-2"><a href="#reviews">Отзывы</a></li>
@@ -320,7 +374,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             function updateCartCount() {
-                fetch('/api/cart_count/')
+                fetch("{% url 'cart_count' %}")
                     .then(response => response.json())
                     .then(data => {
                         document.querySelectorAll('.cart-count').forEach(el => {
@@ -334,6 +388,7 @@
 
             updateCartCount();
 
+            // Обработчики для кнопок добавления в корзину (если они есть на странице)
             document.querySelectorAll('.add-to-cart').forEach(button => {
                 button.addEventListener('click', function() {
                     const originalHtml = this.innerHTML;
@@ -354,6 +409,89 @@
                         this.classList.remove('btn-success');
                         this.classList.add('btn-danger');
                     }, 2000);
+                });
+            });
+        });
+    </script>
+
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Обновление счетчика корзины
+            function updateCartCount() {
+                fetch("{% url 'cart_count' %}")
+                    .then(response => response.json())
+                    .then(data => {
+                        document.querySelectorAll('.cart-count').forEach(el => {
+                            el.textContent = data.count || 0;
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Ошибка при получении количества корзины:', error);
+                        document.querySelectorAll('.cart-count').forEach(el => {
+                            el.textContent = 0;
+                        });
+                    });
+            }
+
+            // Изначальное обновление счетчика
+            updateCartCount();
+
+            // Обработчики для кнопок добавления в корзину
+            document.querySelectorAll('.add-to-cart').forEach(button => {
+                button.addEventListener('click', function() {
+                    const menuItemId = this.getAttribute('data-id');
+                    const originalHtml = this.innerHTML;
+                    const button = this;
+
+                    // Отправляем запрос на добавление в корзину
+                    fetch("{% url 'add_to_cart_api' %}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        body: JSON.stringify({
+                            menu_item_id: menuItemId,
+                            quantity: 1
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            updateCartCount();
+
+                            button.innerHTML = '<i class="fas fa-check me-1"></i> Добавлено';
+                            button.classList.remove('btn-danger');
+                            button.classList.add('btn-success');
+
+                            setTimeout(() => {
+                                button.innerHTML = originalHtml;
+                                button.classList.remove('btn-success');
+                                button.classList.add('btn-danger');
+                            }, 2000);
+                        } else {
+                            alert('Ошибка: ' + (data.error || 'Не удалось добавить товар'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Ошибка:', error);
+                        alert('Ошибка при добавлении в корзину');
+                    });
                 });
             });
         });

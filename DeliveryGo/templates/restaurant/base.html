@@ -254,12 +254,12 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#contact">Контакты</a>
                     </li>
-                    <li class="nav-item ms-2">
-                        <a class="btn btn-outline-danger cart-btn" href="#cart">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span class="cart-count">0</span>
-                        </a>
-                    </li>
+                        <li class="nav-item ms-2">
+                            <a class="btn btn-outline-danger cart-btn" href="{% url 'restaurant:cart' %}">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span class="cart-count">0</span>
+                            </a>
+                        </li>
                 </ul>
             </div>
         </div>
